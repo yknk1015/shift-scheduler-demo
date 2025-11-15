@@ -15,6 +15,7 @@
             --text-muted: #64748b;
             --accent: #2563eb;
             --accent-dark: #1d4ed8;
+            --accent-soft: #dbeafe;
             --success-bg: #dcfce7;
             --success-text: #14532d;
             --error-bg: #fee2e2;
@@ -79,76 +80,169 @@
             gap: 8px;
         }
 
-        .quick-links-card {
+        .overview-hero {
             margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            align-items: center;
         }
 
-        .quick-links-card .quick-links {
+        .hero-copy .eyebrow {
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 0 0 4px;
+        }
+
+        .hero-copy h2 {
+            margin: 0 0 10px;
+            font-size: 26px;
+        }
+
+        .hero-copy p {
+            margin: 0 0 16px;
+            color: var(--text-secondary);
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .hero-summary {
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            border-radius: 16px;
+            padding: 18px;
+            background: linear-gradient(145deg, #f8fafc, #fff);
+        }
+
+        .hero-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .hero-status-pill {
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            background: rgba(37, 99, 235, 0.12);
+            color: var(--accent-dark);
+        }
+
+        .hero-status-pill.idle { background: rgba(15, 118, 110, 0.12); color: #0f766e; }
+        .hero-status-pill.processing { background: #fef3c7; color: #b45309; }
+        .hero-status-pill.success { background: var(--success-bg); color: var(--success-text); }
+        .hero-status-pill.error { background: var(--error-bg); color: var(--error-text); }
+
+        .hero-status small {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .hero-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(120px, 1fr));
+            gap: 12px;
+        }
+
+        .hero-metric {
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: #fff;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+        }
+
+        .hero-metric span {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .hero-metric strong {
+            display: block;
+            font-size: 22px;
+            margin-top: 6px;
+        }
+
+        .hero-note {
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .hero-period-controls {
+            margin-top: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .hero-period-display {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .workflow-card {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .workflow-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .workflow-step {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            background: #f8fafc;
+        }
+
+        .workflow-step .number {
+            width: 32px;
+            height: 32px;
+            border-radius: 999px;
+            background: var(--accent);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .workflow-step h4 {
+            margin: 0 0 4px;
+            font-size: 16px;
+        }
+
+        .workflow-step p {
+            margin: 0 0 10px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .workflow-step .actions {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
         }
 
-        .quick-links-card .quick-links .button {
-            background: var(--accent-soft);
-            color: var(--accent-dark);
-            border: 1px solid var(--border);
-        }
-
-        .period-card {
-            margin-bottom: 24px;
-        }
-
-        .period-toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 12px;
-        }
-
-        .period-picker {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .period-inputs {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .period-inputs label {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .period-inputs input,
-        .period-inputs select {
-            font-size: 16px;
-            padding: 6px 10px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background: #fff;
-            color: var(--text-primary);
-            min-width: 90px;
-        }
-
-        .period-label {
-            display: flex;
-            align-items: baseline;
-            gap: 8px;
-            font-size: 15px;
-            color: var(--text-secondary);
-        }
-
-        .period-label strong {
-            font-size: 18px;
-            color: var(--text-primary);
-        }
 
         .grid {
             display: grid;
@@ -419,14 +513,72 @@
 
         
 
-        .stat-grid {
+        .stat-hero {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
             gap: 12px;
+            margin-bottom: 16px;
         }
 
-        .stat-grid.small {
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        .stat-hero-card {
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            border-radius: 14px;
+            padding: 16px 18px;
+            background: linear-gradient(135deg, #f8fafc, #ffffff);
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .kpi-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .kpi-value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .trend-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-size: 12px;
+            color: #075985;
+            background: #dbeafe;
+            width: fit-content;
+        }
+
+        .trend-pill.alt {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .stat-mini-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-mini-card {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 12px;
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+        }
+
+        .stat-subsection-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
         }
 
         .stat-label {
@@ -488,6 +640,57 @@
             display: flex;
             justify-content: space-between;
             gap: 12px;
+        }
+
+        .data-hero {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .data-kpi {
+            border: 1px solid rgba(203, 213, 225, 0.8);
+            border-radius: 12px;
+            padding: 14px;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .data-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 12px;
+        }
+
+        .data-meta .meta-date {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .data-list {
+            list-style: none;
+            margin: 0;
+            padding-left: 0;
+        }
+
+        .data-list li {
+            padding: 6px 0;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dashed #e2e8f0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .data-list li:last-child {
+            border-bottom: none;
         }
 
         .form-grid {
@@ -578,16 +781,6 @@
                 align-items: flex-start;
             }
 
-            .period-toolbar {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 16px;
-            }
-
-            .period-picker {
-                justify-content: space-between;
-            }
-
             .card.span-2 {
                 grid-column: span 1;
             }
@@ -599,1193 +792,235 @@
         <header class="page-header">
             <div>
                 <h1>シフト管理ダッシュボード</h1>
-                <p class="subtitle">従業員管理から自動シフト生成まで、この画面で完結します。</p>
+                <p class="subtitle">主要なシフト作成タスクをまとめたホーム画面です。</p>
             </div>
             <div class="user-actions">
                 <span id="user-info" class="user-info">ログイン情報を取得しています...</span>
                 <div class="user-buttons">
-                    <button class="button" onclick="location.href='/rules-management'">ルール管理</button>
-                    <button class="button ghost" onclick="location.href='/schedule-editor'">シフトグリッド編集</button>
-                    <button class="button ghost" id="open-calendar">カレンダー</button>
+                    <button class="button" onclick="location.href='/quick-access'">シフト運用ポータル</button>
                     <button class="button danger" onclick="logout()">ログアウト</button>
                 </div>
             </div>
         </header>
 
-        <section class="card quick-links-card">
-            <div class="section-header compact">
-                <div>
-                    <h2>クイックアクセス</h2>
-                    <p class="section-subtitle">需要・勤怠・設定系ページへのショートカットです。</p>
-                </div>
-                <button class="button ghost" id="download-csv">CSVダウンロード</button>
-            </div>
-            <div class="quick-links">
-                <button class="button ghost" onclick="location.href='/warnings'">Warnings</button>
-                <button class="button ghost" onclick="location.href='/pairing-settings'">Pairing</button>
-                <button class="button ghost" onclick="location.href='/monthly-demand'">Monthly Demand</button>
-                <button class="button ghost" onclick="location.href='/demand'">Demand</button>
-                <button class="button ghost" onclick="location.href='/demand-analytics'">Demand Analytics</button>
-                <button class="button ghost" onclick="location.href='/leave'">Leave</button>
-                <button class="button ghost" onclick="location.href='/calendar'">Calendar</button>
-                <button class="button ghost" onclick="location.href='/skill-management'">Skill Management</button>
-                <button class="button ghost" onclick="location.href='/employee-master'">Employee Master</button>
-                <button class="button ghost" onclick="location.href='/holidays'">Holidays</button>
-                <button class="button ghost" onclick="location.href='/rules-management'">Rules</button>
-                <button class="button ghost" onclick="location.href='/admin-debug'">Admin Debug</button>
-            </div>
-        </section>
-
-                <section class="card period-card">
-            <div class="section-header compact">
-                <div>
-                    <h2>表示期間</h2>
-                    <p class="section-subtitle">プレビュー対象の年月と粒度を選択します。</p>
-                </div>
-                <div class="period-label">
-                    <span>対象:</span>
-                    <strong id="schedule-period"></strong>
+        <section class="card overview-hero" id="overview-hero">
+            <div class="hero-copy">
+              <p class="eyebrow">Overview</p>
+              <h2>操作に迷わないシンプルなダッシュボード</h2>
+              <p>直感的なワークフローと最小限の情報で「シフトを作成する」ための第一印象を整えました。必要に応じてシフト運用ポータルから詳細設定へアクセスできます。</p>
+                <div class="hero-actions">
+                    <button class="button primary" onclick="location.href='/schedule-editor'">シフトを作成する</button>
+                    <button class="button ghost" onclick="location.href='/monitor'">運用モニター</button>
+                    <button class="button secondary" id="download-csv">CSVダウンロード</button>
                 </div>
             </div>
-            <div class="period-toolbar">
-                <div class="period-picker">
-                    <button class="button ghost" id="prev-month">前月</button>
-                    <div class="period-inputs">
-                        <label>
-                            <span>年</span>
-                            <input type="number" id="year-input" min="2000" max="2100">
-                        </label>
-                        <label>
-                            <span>月</span>
-                            <select id="month-input"></select>
-                        </label>
-                        <label>
-                            <span>粒度</span>
-                            <select id="granularity-select">
-                                <option value="60" selected>60分</option>
-                                <option value="30">30分</option>
-                                <option value="15">15分</option>
-                            </select>
-                        </label>
+            <div class="hero-summary">
+                <div class="hero-status">
+                    <span class="hero-status-pill idle" id="hero-status-pill">待機中</span>
+                    <small id="hero-status-text">最新のシフト状態がここに表示されます</small>
+                </div>
+                <div class="hero-metrics">
+                    <div class="hero-metric">
+                        <span>対象期間</span>
+                        <strong id="hero-period">-</strong>
                     </div>
-                    <button class="button ghost" id="next-month">翌月</button>
+                    <div class="hero-metric">
+                        <span>シフト</span>
+                        <strong id="hero-assignment-count">0</strong>
+                    </div>
+                    <div class="hero-metric">
+                        <span>従業員</span>
+                        <strong id="hero-employee-count">0</strong>
+                    </div>
+                    <div class="hero-metric">
+                        <span>不足</span>
+                        <strong id="hero-shortage-count">0</strong>
+                    </div>
                 </div>
+                <div class="hero-period-controls">
+                    <button type="button" class="button ghost subtle" id="hero-prev">前月</button>
+                    <span class="hero-period-display" id="hero-period-inline">-</span>
+                    <button type="button" class="button ghost subtle" id="hero-next">翌月</button>
+                </div>
+                <div class="hero-note" id="hero-shortage-note">不足データはありません。</div>
             </div>
         </section>
-
 
         <div class="grid">
-            <section class="card span-2" id="schedule-card">
+            <section class="card span-2 workflow-card">
                 <div class="section-header">
                     <div>
-                        <h2>シフト生成</h2>
-                        <p class="section-subtitle">対象月のシフトを自動生成し、担当者を一覧で確認できます。</p>
-                    </div>
-                    <div class="section-actions">
-                        <button class="button secondary" id="refresh-schedule">最新シフト取得</button>
-                        <button class="button" id="reset-schedule">シフト初期化</button>
-                        <button class="button primary" id="generate-schedule">シフトを生成</button>
+                        <h2>シフト公開フロー</h2>
+                        <p class="section-subtitle">生成 → グリッド編集 → 従業員への共有の流れでご利用ください。</p>
                     </div>
                 </div>
-
-                <div id="schedule-message" class="message"></div>
-                <div id="shortage-details" class="message" style="display:none;"></div>
-
-                <div class="info-grid">
-                    <div class="info-card">
-                        <div class="info-label">シフト件数</div>
-                        <div class="info-value" id="assignment-count">0</div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-label">従業員数</div>
-                        <div class="info-value" id="employee-count">0</div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-label">稼働日数</div>
-                        <div class="info-value" id="working-day-count">0</div>
-                    </div>
-                </div>
-
-                <div id="schedule-loading" class="loading" style="display: none;">シフトを読み込み中です...</div>
-                <div id="schedule-empty" class="empty-state" style="display: none;">まだシフトが登録されていません。まずは「シフトを生成」を押してください。</div>
-
-                <div class="table-container">
-                    <table id="schedule-table">
-                        <thead>
-                            <tr>
-                                <th>日付</th>
-                                <th>曜日</th>
-                                <th>シフト</th>
-                                <th>時間</th>
-                                <th>担当者</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </section>
-
-            <section class="card" id="stats-card">
-                <div class="section-header compact">
-                    <h2>統計サマリー</h2>
-                    <button class="button ghost" id="refresh-stats">更新</button>
-                    <div style="margin-top:8px">
-                      <div class="table-wrapper" id="free-daily-card">
-                        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-                          <h3 style="margin:0; font-size:16px;">日別FREE人数</h3>
-                          <button class="button ghost" id="refresh-free">更新</button>
+                <div class="workflow-steps">
+                    <div class="workflow-step">
+                        <div class="number">1</div>
+                        <div>
+                            <h4>シフト作成 / 調整</h4>
+                            <p>シフトエディタで需要ベースの生成と担当者グリッド調整を一続きで行えます。生成状況は統計サマリーで確認してください。</p>
+                            <div class="actions">
+                                <a class="button secondary" href="/schedule-editor">シフトエディタを開く</a>
+                            </div>
                         </div>
-                        <table style="margin-top:6px;">
-                          <thead><tr><th>日付</th><th>FREE人数</th></tr></thead>
-                          <tbody id="free-daily-body"><tr><td colspan="2" class="muted">読み込み中...</td></tr></tbody>
-                        </table>
-                      </div>
-                      <div class="table-wrapper" id="off-daily-card" style="margin-top:8px;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-                          <h3 style="margin:0; font-size:16px;">日別休日人数</h3>
-                          <button class="button ghost" id="refresh-off">更新</button>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="number">2</div>
+                        <div>
+                            <h4>需要・不足の見直し</h4>
+                            <p>不足が気になるときは需要管理でテンプレや一時需要を補正し、運用モニターで稼働状況をチェックします。</p>
+                            <div class="actions">
+                                <a class="button secondary" href="/demand">需要管理を開く</a>
+                                <a class="button ghost subtle" href="/monitor">運用モニター</a>
+                            </div>
                         </div>
-                        <table style="margin-top:6px;">
-                          <thead><tr><th>日付</th><th>休日人数</th></tr></thead>
-                          <tbody id="off-daily-body"><tr><td colspan="2" class="muted">読み込み中...</td></tr></tbody>
-                        </table>
-                      </div>
-                      <div class="table-wrapper" id="monthly-stats2" style="margin-top:12px;"></div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="number">3</div>
+                        <div>
+                            <h4>従業員へ共有</h4>
+                            <p>確定したシフトは CSV ダウンロードやカレンダー表示で出力し、従業員に展開します。共有前チェックもここで完了します。</p>
+                            <div class="actions">
+                                <button type="button" class="button ghost" id="workflow-export">CSVをダウンロード</button>
+                                <a class="button ghost subtle" href="/calendar">カレンダーを見る</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div id="stats-message" class="message"></div>
-                <div class="stat-grid">
-                    <div>
-                        <div class="stat-label">総シフト数</div>
-                        <div class="stat-value" id="stat-total-shifts">0</div>
-                    </div>
-                    <div>
-                        <div class="stat-label">稼働従業員</div>
-                        <div class="stat-value" id="stat-unique-employees">0</div>
-                    </div>
-                </div>
-                
-                <div class="stat-subsection">
-                    <h3>シフト種別内訳</h3>
-                    <ul id="shift-type-list"></ul>
-                </div>
-
-                <div class="stat-subsection">
-                    <h3>勤務数トップ</h3>
-                    <ol id="workload-list" class="ranking-list"></ol>
-                </div>
-            </section>
-
-            <section class="card" id="data-card">
-                <div class="section-header compact">
-                    <h2>データ統計</h2>
-                    <button class="button ghost" id="refresh-data-stats">更新</button>
-                </div>
-                <div id="data-message" class="message"></div>
-                <div class="info-grid">
-                    <div class="info-card">
-                        <div class="info-label">従業員数</div>
-                        <div class="info-value" id="data-total-employees">0</div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-label">割当総数</div>
-                        <div class="info-value" id="data-total-assignments">0</div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-label">最終更新</div>
-                        <div class="info-value" id="data-last-updated">-</div>
-                    </div>
-                </div>
-                <div class="stat-subsection">
-                    <h3>最近6か月の割当件数</h3>
-                    <ul id="data-monthly-stats"></ul>
-                </div>
-            </section>
-
-            <section class="card" id="employee-card" style="display:none;">
-                <div class="section-header compact">
-                    <h2>従業員管理</h2>
-                    <button class="button ghost" id="reload-employees">再読み込み</button>
-                </div>
-                <p class="section-subtitle">シフト対象の従業員を登録・削除できます。</p>
-                <form id="employee-form" class="form-grid">
-                    <label>
-                        <span>氏名</span>
-                        <input type="text" id="employee-name" required placeholder="例: 佐藤 花子">
-                    </label>
-                    <label>
-                        <span>役職</span>
-                        <input type="text" id="employee-role" placeholder="例: スタッフ">
-                    </label>
-                    <button type="submit" class="button primary">従業員を追加</button>
-                </form>
-                <div id="employee-message" class="message"></div>
-                <div class="table-container small">
-                    <table id="employee-table">
-                        <thead>
-                            <tr>
-                                <th>氏名</th>
-                                <th>役職</th>
-                                <th>登録日</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </section>
-
-            <section class="card span-2" id="shift-config-card">
-                <div class="section-header compact">
-                    <h2>シフト設定</h2>
-                    <button class="button ghost" id="reload-shift-configs">再読み込み</button>
-                </div>
-                <p class="section-subtitle">稼働時間帯と必要人数を設定します。アクティブな設定のみが自動生成で使用されます。</p>
-                <form id="shift-config-form" class="form-grid">
-                    <label>
-                        <span>名称</span>
-                        <input type="text" id="config-name" required placeholder="例: 朝シフト">
-                    </label>
-                    <label>
-                        <span>開始時間</span>
-                        <input type="time" id="config-start" required>
-                    </label>
-                    <label>
-                        <span>終了時間</span>
-                        <input type="time" id="config-end" required>
-                    </label>
-                    <label>
-                        <span>必要人数</span>
-                        <input type="number" id="config-required" min="1" value="4" required>
-                    </label>
-                          <span>曜日の指定</span>
-                      <div>
-                          <span>曜日（複数選択可・未選択は全日）</span>
-                          <div class="checkbox-row" id="config-days">
-                              <label class="checkbox"><input type="checkbox" value="MONDAY">月</label>
-                              <label class="checkbox"><input type="checkbox" value="TUESDAY">火</label>
-                              <label class="checkbox"><input type="checkbox" value="WEDNESDAY">水</label>
-                              <label class="checkbox"><input type="checkbox" value="THURSDAY">木</label>
-                              <label class="checkbox"><input type="checkbox" value="FRIDAY">金</label>
-                              <label class="checkbox"><input type="checkbox" value="SATURDAY">土</label>
-                              <label class="checkbox"><input type="checkbox" value="SUNDAY">日</label>
-                          </div>
-                          <div class="button-row">
-                              <button type="button" class="button secondary subtle" id="preset-all-days">全日</button>
-                              <button type="button" class="button secondary subtle" id="preset-weekdays">月〜金</button>
-                              <button type="button" class="button secondary subtle" id="preset-sat">土</button>
-                              <button type="button" class="button secondary subtle" id="preset-weekend">土・日</button>
-                              <button type="button" class="button subtle" id="preset-clear">クリア</button>
-                          </div>
-                      </div>
-                      <label class="checkbox">
-                          <input type="checkbox" id="config-holiday">
-                          <span>祝日シフト</span>
-                      </label>
-                      <div class="button-row">
-                          <button type="submit" class="button primary" id="config-submit">設定を追加</button>
-                          <button type="button" class="button" id="config-cancel" style="display:none;">編集をキャンセル</button>
-                      </div>
-                  </form>
-                <div id="shift-config-message" class="message"></div>
-                <div class="table-container small">
-                    <table id="shift-config-table">
-                          <thead>
-                              <tr>
-                                  <th>名称</th>
-                                  <th>時間帯</th>
-                                  <th>人数</th>
-                                  
-                                  <th>曜日</th>
-                                  
-                                  <th>状態</th>
-                                  <th></th>
-                              </tr>
-                          </thead>
-                          <tbody></tbody>
-                      </table>
-                  </div>
             </section>
 
             
         </div>
 
-        <div class="management-grid">
-            <section class="card" id="manual-edit-card">
-                <div class="section-header compact">
-                    <div>
-                        <h2>シフトの手動編集</h2>
-                        <p class="section-subtitle">直近の1日分のシフトを追加・編集できます。確定済みの枠は下部の一覧で確認できます。</p>
-                    </div>
-                    <div class="section-actions">
-                        <button class="button ghost" id="man-refresh" type="button">一覧を更新</button>
-                    </div>
-                </div>
-                <input type="hidden" id="man-id" />
-                <div class="form-row">
-                    <label>日付
-                        <input type="date" id="man-date" />
-                    </label>
-                    <label>勤務者
-                        <select id="man-employee" style="min-width:180px;"></select>
-                    </label>
-                    <label>開始
-                        <input type="time" id="man-start" value="09:00" />
-                    </label>
-                    <label>終了
-                        <input type="time" id="man-end" value="18:00" />
-                    </label>
-                    <label>シフト名
-                        <input type="text" id="man-name" placeholder="Manual" />
-                    </label>
-                </div>
-                <div class="form-row">
-                    <button class="button primary" id="man-create" type="button">作成</button>
-                    <button class="button" id="man-update" type="button">更新</button>
-                    <button class="button" id="day-fill-gaps" type="button">当日の空枠を埋める</button>
-                    <button class="button" id="month-fill-gaps" type="button">期間の空枠を埋める(試験)</button>
-                </div>
-                <div id="man-msg" class="message"></div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr><th>ID</th><th>日付</th><th>開始</th><th>終了</th><th>勤務者</th><th>シフト名</th><th></th></tr>
-                        </thead>
-                        <tbody id="man-list"></tbody>
-                    </table>
-                </div>
-            </section>
-
-            <section class="card" id="reservation-card">
-                <div class="section-header compact">
-                    <div>
-                        <h2>事前シフト予約</h2>
-                        <p class="section-subtitle">スケジュール作成時に考慮される予約枠を登録できます。自動生成の予約は候補枠に保存されます。</p>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <label>日付
-                        <input type="date" id="res-date" />
-                    </label>
-                    <label>勤務者
-                        <select id="res-employee" style="min-width:180px;"></select>
-                    </label>
-                    <label>スキル
-                        <select id="res-skill" style="min-width:140px;">
-                            <option value="">未選択</option>
-                        </select>
-                    </label>
-                    <label>開始
-                        <input type="time" id="res-start" value="09:00" />
-                    </label>
-                    <label>終了
-                        <input type="time" id="res-end" value="18:00" />
-                    </label>
-                    <label>ラベル
-                        <input type="text" id="res-label" value="Reservation" />
-                    </label>
-                    <label>メモ
-                        <input type="text" id="res-note" placeholder="任意" />
-                    </label>
-                </div>
-                <div class="form-row">
-                    <button class="button" id="res-create" type="button">予約を登録</button>
-                    <button class="button ghost" id="res-refresh" type="button">最新表示</button>
-                    <button class="button ghost" id="res-clear" type="button">フォームをリセット</button>
-                </div>
-                <div class="form-row">
-                    <label>一括対象
-                        <input type="date" id="res-range-start" />
-                    </label>
-                    <span class="range-sep">〜</span>
-                    <label>
-                        <input type="date" id="res-range-end" />
-                    </label>
-                    <button class="button ghost" id="res-range-sync" type="button">当月に同期</button>
-                    <button class="button ghost" id="res-bulk-delete" type="button">期間の予約を削除</button>
-                </div>
-                <div id="reservation-message" class="message"></div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>日付</th>
-                                <th>時間</th>
-                                <th>勤務者</th>
-                                <th>スキル</th>
-                                <th>ラベル</th>
-                                <th>ステータス</th>
-                                <th>メモ</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id="res-list"></tbody>
-                    </table>
-                </div>
-                <div class="timeline-panel">
-                    <h3 style="margin:0 0 12px;">タイムライン（プレビュー）と一時需要</h3>
-                    <div class="form-row">
-                        <label>粒度
-                            <select id="t_gran">
-                                <option value="15">15分</option>
-                                <option value="30">30分</option>
-                                <option value="60" selected>60分</option>
-                            </select>
-                        </label>
-                        <label>スキル
-                            <select id="t_skill" style="min-width:140px;">
-                                <option value="">すべて</option>
-                            </select>
-                        </label>
-                        <button class="button ghost" type="button" id="t_refresh">プレビュー更新</button>
-                    </div>
-                    <div class="form-row">
-                        <strong style="font-size:14px;">一時需要の追加</strong>
-                        <label>開始<input type="time" id="b_start" value="12:00" /></label>
-                        <label>終了<input type="time" id="b_end" value="13:00" /></label>
-                        <label>座席<input type="number" id="b_seats" value="1" min="1" style="width:90px;" /></label>
-                        <label>スキル
-                            <select id="b_skill" style="min-width:140px;">
-                                <option value="">未指定</option>
-                            </select>
-                        </label>
-                        <button class="button" id="b_add" type="button">追加</button>
-                        <span id="b_msg" class="muted"></span>
-                    </div>
-                    <div class="muted" style="margin-top:6px;">※ 事前シフト予約の日付を基準にプレビューを表示します。</div>
-                    <div class="timeline-grid">
-                        <div id="t_times"></div>
-                        <div id="t_rows"></div>
-                    </div>
-                </div>
-            </section>
-        </div>
     </div>
+    
     <script>
-        const monthInput = document.getElementById('month-input');
-        const yearInput = document.getElementById('year-input');
-        const schedulePeriodLabel = document.getElementById('schedule-period');
-        const scheduleTableBody = document.querySelector('#schedule-table tbody');
-        const scheduleEmpty = document.getElementById('schedule-empty');
-        const scheduleLoading = document.getElementById('schedule-loading');
+        const heroStatusHints = {
+            idle: '生成の準備が整いました',
+            processing: 'シフトを計算しています',
+            success: '最新のシフトデータが反映されました',
+            error: 'エラー内容を確認してください'
+        };
+        const heroState = {
+            year: new Date().getFullYear(),
+            month: new Date().getMonth() + 1
+        };
+        let heroDom = {};
 
         document.addEventListener('DOMContentLoaded', () => {
-            setupMonthOptions();
-            initializePeriod();
-            bindEventListeners();
+            heroDom = {
+                statusPill: document.getElementById('hero-status-pill'),
+                statusText: document.getElementById('hero-status-text'),
+                period: document.getElementById('hero-period'),
+                periodInline: document.getElementById('hero-period-inline'),
+                assignmentCount: document.getElementById('hero-assignment-count'),
+                employeeCount: document.getElementById('hero-employee-count'),
+                shortageCount: document.getElementById('hero-shortage-count'),
+                shortageNote: document.getElementById('hero-shortage-note'),
+                prev: document.getElementById('hero-prev'),
+                next: document.getElementById('hero-next')
+            };
+            bindHeroControls();
+            updateHeroPeriodText();
             loadUserInfo();
-            loadSchedule();
-            loadStatistics();
-            loadEmployees();
-            loadShiftConfigs();
-            loadDataStats();
+            loadHeroSummary();
+            document.getElementById('download-csv')?.addEventListener('click', handleCsvDownload);
+            document.getElementById('workflow-export')?.addEventListener('click', handleCsvDownload);
+            document.getElementById('open-calendar')?.addEventListener('click', () => window.location.href = '/calendar');
         });
 
-        function setupMonthOptions() {
-            for (let month = 1; month <= 12; month++) {
-                const option = document.createElement('option');
-                option.value = month;
-                option.textContent = `${month}月`;
-                monthInput.appendChild(option);
-            }
+        function bindHeroControls() {
+            heroDom.prev?.addEventListener('click', () => changeHeroMonth(-1));
+            heroDom.next?.addEventListener('click', () => changeHeroMonth(1));
         }
 
-        function initializePeriod() {
-            const today = new Date();
-            setPeriod(today.getFullYear(), today.getMonth() + 1);
-            yearInput.addEventListener('change', handlePeriodChange);
-            monthInput.addEventListener('change', handlePeriodChange);
+        function changeHeroMonth(offset) {
+            const date = new Date(heroState.year, heroState.month - 1 + offset, 1);
+            heroState.year = date.getFullYear();
+            heroState.month = date.getMonth() + 1;
+            updateHeroPeriodText();
+            loadHeroSummary();
         }
 
-        function bindEventListeners() {
-            document.getElementById('prev-month')?.addEventListener('click', () => changeMonth(-1));
-            document.getElementById('next-month')?.addEventListener('click', () => changeMonth(1));
-            document.getElementById('open-calendar')?.addEventListener('click', () => window.location.href = '/calendar');
-            document.getElementById('generate-schedule')?.addEventListener('click', handleGenerateSchedule);
-            // Add robust watcher to refresh after async generation completes (low-spec friendly)
-            document.getElementById('generate-schedule')?.addEventListener('click', async () => {
-                try {
-                    const { year, month } = getPeriod();
-                    // Lightweight job-status polling until done
-                    let delay = 700; const maxWait = Date.now() + 5*60*1000; // up to 5 min
-                    const msgEl = document.getElementById('schedule-message');
-                    // mark generating state ON
-                    try { window.__schedGen = window.__schedGen || {}; window.__schedGen.generating = true; } catch(_){}
-                    while (Date.now() < maxWait) {
-                        await new Promise(r => setTimeout(r, delay));
-                        try {
-                            const st = await callApi(`/api/schedule/jobs/status?year=${year}&month=${month}`);
-                            const d = st && (st.data || st.meta) || {};
-                            const running = !!(d.running);
-                            const done = !!(d.done);
-                            const cnt = Number(d.count || 0);
-                            if (msgEl) msgEl.textContent = done ? '生成完了。反映中...' : `生成中... ${cnt}件`;
-                            if (done) break;
-                        } catch (_) {}
-                        delay = Math.min(2000, Math.floor(delay * 1.4));
-                    }
-                    if (msgEl) msgEl.textContent = '反映中...';
-                    await loadSchedule();
-                    await loadStatistics();
-                    await loadDataStats();
-                    // clear generating state and message
-                    try { if (window.__schedGen) window.__schedGen.generating = false; } catch(_){}
-                    if (msgEl) msgEl.textContent = '';
-                } catch (_) { /* ignore */ }
-            });
-            document.getElementById('reset-schedule')?.addEventListener('click', handleResetSchedule);
-            document.getElementById('refresh-schedule')?.addEventListener('click', () => loadSchedule(true));
-            document.getElementById('refresh-stats')?.addEventListener('click', loadStatistics);
-            if (document.getElementById('employee-form')) {
-              document.getElementById('employee-form').addEventListener('submit', handleCreateEmployee);
-            }
-            if (document.getElementById('reload-employees')) {
-              document.getElementById('reload-employees').addEventListener('click', loadEmployees);
-            }
-            document.getElementById('shift-config-form')?.addEventListener('submit', handleCreateShiftConfig);
-            document.getElementById('reload-shift-configs')?.addEventListener('click', loadShiftConfigs);
-            document.getElementById('refresh-data-stats')?.addEventListener('click', loadDataStats);
-            const exportEmployeesBtn = document.getElementById('export-employees');
-            if (exportEmployeesBtn) {
-                exportEmployeesBtn.addEventListener('click', () => downloadFile('/api/data/export/employees/csv', 'employees.csv'));
-            }
-            const exportScheduleBtn = document.getElementById('export-schedule');
-            if (exportScheduleBtn) {
-                exportScheduleBtn.addEventListener('click', () => {
-                    const { year, month } = getPeriod();
-                    const url = `/api/data/export/schedule/csv?year=${year}&month=${month}`;
-                    const filename = `schedule_${year}-${String(month).padStart(2, '0')}.csv`;
-                    downloadFile(url, filename);
-                });
-            }
-            const backupBtn = document.getElementById('create-backup');
-            if (backupBtn) {
-                backupBtn.addEventListener('click', () => {
-                    const filename = `shift_backup_${new Date().toISOString().replace(/[:.]/g, '-')}.txt`;
-                    downloadFile('/api/data/backup/export', filename);
-                });
-            }
+        function updateHeroPeriodText() {
+            const text = `${heroState.year}年${heroState.month}月`;
+            if (heroDom.period) heroDom.period.textContent = text;
+            if (heroDom.periodInline) heroDom.periodInline.textContent = text;
         }
 
-        function handlePeriodChange() {
-            const { year, month } = getPeriod();
-            setPeriod(year, month);
-            loadSchedule();
-            loadStatistics();
-        }
-
-        function changeMonth(offset) {
-            const { year, month } = getPeriod();
-            const date = new Date(year, month - 1 + offset, 1);
-            setPeriod(date.getFullYear(), date.getMonth() + 1);
-            loadSchedule();
-            loadStatistics();
-        }
-
-        function setPeriod(year, month) {
-            yearInput.value = year;
-            monthInput.value = month;
-            schedulePeriodLabel.textContent = `${year}年${month}月`;
-        }
-
-        function getPeriod() {
-            return {
-                year: parseInt(yearInput.value, 10) || new Date().getFullYear(),
-                month: parseInt(monthInput.value, 10) || (new Date().getMonth() + 1)
-            };
-        }
-
-        async function handleGenerateSchedule() {
-            const { year, month } = getPeriod();
-            try { window.__schedGen = window.__schedGen || {}; window.__schedGen.generating = true; } catch(_){}
-            setMessage('schedule-message', '生成を開始しました...', 'info');
-            const shortageBox = document.getElementById('shortage-details');
-            shortageBox.style.display = 'none';
-            shortageBox.textContent = '';
-            setScheduleLoading(true);
-            try {
-                const granSel = document.getElementById('granularity-select');
-                const gran = granSel ? Number(granSel.value) : 60;
-                const response = await callApi(`/api/schedule/generate/demand/async?year=${year}&month=${month}&granularity=${gran}&mode=simple`, { method: 'POST' });
-                setMessage('schedule-message', response.message || 'シフトを生成しました。', 'success');
-                const shortages = (response.meta && response.meta.shortages) || [];
-                if (shortages.length > 0) {
-                    const lines = shortages.map(s => `${s.workDate} ${s.shiftName}: ${s.assigned}/${s.required}`);
-                    shortageBox.textContent = `割当不足の詳細: ${lines.join(' / ')}`;
-                    shortageBox.style.display = 'block';
-                }
-                // Poll a few times because generation runs asynchronously
-                let attempts = 0; let updated = false;
-                while (attempts < 6) {
-                    attempts++;
-                    try {
-                        const res = await callApi(`/api/schedule?year=${year}&month=${month}`);
-                        const assignments = res.data || [];
-                        const has = renderSchedule(assignments);
-                        updateScheduleSummary(res.meta || {}, assignments);
-                        scheduleEmpty.style.display = has ? 'none' : 'block';
-                        if (has) { updated = true; break; }
-                    } catch (_) { }
-                    await new Promise(r => setTimeout(r, 1500));
-                }
-                if (!updated) {
-                    await loadSchedule();
-                }
-                await loadStatistics();
-                await loadDataStats();
-                await window.refreshReservationList?.();
-            } catch (error) {
-                setMessage('schedule-message', error.message || 'シフト生成に失敗しました。', 'error');
-            } finally {
-                setScheduleLoading(false);
-            }
-        }
-
-        async function handleResetSchedule() {
-            const { year, month } = getPeriod();
-            if (!confirm(`${year}年${month}月のシフトを初期化します。よろしいですか？`)) {
-                return;
-            }
-            setMessage('schedule-message', '', 'info');
-            setScheduleLoading(true);
-            try {
-                await callApi(`/api/schedule/reset?year=${year}&month=${month}`, { method: 'DELETE' });
-                setMessage('schedule-message', 'シフトを初期化しました。', 'success');
-                await loadSchedule();
-                await loadStatistics();
-                await loadDataStats();
-                await window.refreshReservationList?.();
-            } catch (error) {
-                setMessage('schedule-message', error.message || 'シフト初期化に失敗しました。', 'error');
-            } finally {
-                setScheduleLoading(false);
-            }
-        }
-
-        async function loadSchedule(showMessageOnSuccess = false) {
-            const { year, month } = getPeriod();
-            setScheduleLoading(true);
+        async function loadHeroSummary() {
+            const { year, month } = heroState;
+            setHeroStatus('processing', '読み込み中...');
             try {
                 const response = await callApi(`/api/schedule?year=${year}&month=${month}`);
                 const assignments = response.data || [];
-                const hasAssignments = renderSchedule(assignments);
-                updateScheduleSummary(response.meta || {}, assignments);
-                scheduleEmpty.style.display = hasAssignments ? 'none' : 'block';
-                const gen = (window.__schedGen && window.__schedGen.generating) ? true : false;
-                if (!gen) {
-                    if (showMessageOnSuccess) {
-                        setMessage('schedule-message', response.message || 'シフトを取得しました。', 'info');
-                    } else {
-                        setMessage('schedule-message', '', 'info');
-                    }
+                updateHeroSummary(response.meta || {}, assignments);
+                const shortages = (response.meta && response.meta.shortages) || [];
+                updateHeroShortages(shortages);
+                setHeroStatus(assignments.length ? 'success' : 'idle', assignments.length ? '最新データ' : 'シフトなし');
+            } catch (error) {
+                updateHeroSummary({}, []);
+                updateHeroShortages([]);
+                setHeroStatus('error', '取得に失敗');
+                if (heroDom.shortageNote) {
+                    heroDom.shortageNote.textContent = error.message || 'シフト情報の取得に失敗しました。';
                 }
-            } catch (error) {
-                renderSchedule([]);
-                updateScheduleSummary({}, []);
-                scheduleEmpty.style.display = 'block';
-                setMessage('schedule-message', error.message || 'シフトの取得に失敗しました。', 'error');
-            } finally {
-                setScheduleLoading(false);
             }
         }
 
-        async function loadStatistics() {
-            const { year, month } = getPeriod();
-            setMessage('stats-message', '', 'info');
-            try {
-                const monthly = await callApi(`/api/schedule/stats/monthly?year=${year}&month=${month}`);
-                updateMonthlyStats(monthly.data);
-                const workload = await callApi(`/api/schedule/stats/employee-workload?year=${year}&month=${month}`);
-                updateWorkload(workload.data || []);
-                const days = await callApi(`/api/schedule/stats/employee-days?year=${year}&month=${month}`);
-                renderEmployeeDays(days.data || []);
-                // Refresh daily FREE/OFF summaries
-                try { await loadFreeDaily(); } catch (_) {}
-                try { await loadOffDaily(); } catch (_) {}
-            } catch (error) {
-                updateMonthlyStats(null);
-                updateWorkload([]);
-                renderEmployeeDays([]);
-                setMessage('stats-message', error.message || '統計の取得に失敗しました。', 'error');
-            }
-        }
-
-        async function loadEmployees() {
-            try {
-                const response = await callApi('/api/employees');
-                renderEmployeeTable(response.data || []);
-                setMessage('employee-message', '', 'info');
-            } catch (error) {
-                renderEmployeeTable([]);
-                setMessage('employee-message', error.message || '従業員の取得に失敗しました。', 'error');
-            }
-        }
-
-        async function loadShiftConfigs() {
-            try {
-                const configs = await callApi('/api/config/shift', {}, { expectSuccess: false });
-                renderShiftConfigTable(configs || []);
-                setMessage('shift-config-message', '', 'info');
-            } catch (error) {
-                renderShiftConfigTable([]);
-                setMessage('shift-config-message', error.message || 'シフト設定の取得に失敗しました。', 'error');
-            }
-        }
-
-        async function loadDataStats() {
-            try {
-                const response = await callApi('/api/data/stats');
-                updateDataStats(response.data || {});
-                setMessage('data-message', '', 'info');
-            } catch (error) {
-                updateDataStats({});
-                setMessage('data-message', error.message || 'データ統計の取得に失敗しました。', 'error');
-            }
-        }
-
-        function setScheduleLoading(isLoading) {
-            scheduleLoading.style.display = isLoading ? 'block' : 'none';
-        }
-
-        function renderSchedule(assignments) {
-            scheduleTableBody.innerHTML = '';
-            if (!assignments || assignments.length === 0) {
-                return false;
-            }
-            const grouped = assignments.reduce((map, item) => {
-                if (!map[item.workDate]) {
-                    map[item.workDate] = [];
-                }
-                map[item.workDate].push(item);
-                return map;
-            }, {});
-            const dates = Object.keys(grouped).sort();
-            dates.forEach(date => {
-                const items = grouped[date].sort((a, b) => {
-                    const time = (a.startTime || '').localeCompare(b.startTime || '');
-                    if (time !== 0) return time;
-                    const shift = (a.shiftName || '').localeCompare(b.shiftName || '', 'ja');
-                    if (shift !== 0) return shift;
-                    return (a.employeeName || '').localeCompare(b.employeeName || '', 'ja');
-                });
-                items.forEach((assignment, index) => {
-                    const row = document.createElement('tr');
-                    if (index === 0) {
-                        const dateCell = document.createElement('td');
-                        dateCell.rowSpan = items.length;
-                        dateCell.textContent = formatDateLabel(date);
-                        row.appendChild(dateCell);
-                        const dayCell = document.createElement('td');
-                        dayCell.rowSpan = items.length;
-                        dayCell.textContent = getDayLabel(date);
-                        row.appendChild(dayCell);
-                    }
-                    const shiftCell = document.createElement('td');
-                    shiftCell.textContent = assignment.shiftName;
-                    row.appendChild(shiftCell);
-                    const timeCell = document.createElement('td');
-                    timeCell.textContent = formatTimeRange(assignment.startTime, assignment.endTime);
-                    row.appendChild(timeCell);
-                    const employeeCell = document.createElement('td');
-                    employeeCell.textContent = assignment.employeeName;
-                    row.appendChild(employeeCell);
-                    scheduleTableBody.appendChild(row);
-                });
-            });
-            return true;
-        }
-
-        function updateScheduleSummary(meta, assignments) {
-            const { year, month } = getPeriod();
-            schedulePeriodLabel.textContent = `${meta.year ?? year}年${meta.month ?? month}月`;
+        function updateHeroSummary(meta, assignments) {
+            const periodText = `${meta.year ?? heroState.year}年${meta.month ?? heroState.month}月`;
+            if (heroDom.period) heroDom.period.textContent = periodText;
+            if (heroDom.periodInline) heroDom.periodInline.textContent = periodText;
             const count = meta.count ?? assignments.length;
-            document.getElementById('assignment-count').textContent = count;
+            if (heroDom.assignmentCount) heroDom.assignmentCount.textContent = count;
             const unique = meta.uniqueEmployees ?? new Set(assignments.map(item => item.employeeName)).size;
-            document.getElementById('employee-count').textContent = unique;
-            const days = meta.workingDays ?? new Set(assignments.map(item => item.workDate)).size;
-            document.getElementById('working-day-count').textContent = days;
+            if (heroDom.employeeCount) heroDom.employeeCount.textContent = unique;
         }
 
-        function updateMonthlyStats(data) {
-            document.getElementById('stat-total-shifts').textContent = data?.totalShifts ?? 0;
-            document.getElementById('stat-unique-employees').textContent = data?.uniqueEmployees ?? 0;
-            const list = document.getElementById('shift-type-list');
-            if (!list) { return; }
-            list.innerHTML = '';
-            if (data?.shiftsByType && Object.keys(data.shiftsByType).length > 0) {
-                Object.entries(data.shiftsByType)
-                    .sort((a, b) => b[1] - a[1])
-                    .forEach(([name, count]) => {
-                        const li = document.createElement('li');
-                        li.textContent = `${name}: ${count}`;
-                        list.appendChild(li);
-                    });
-            } else {
-                const li = document.createElement('li');
-                li.className = 'muted';
-                li.textContent = 'データがありません';
-                list.appendChild(li);
+        function updateHeroShortages(rows) {
+            const count = Array.isArray(rows) ? rows.length : 0;
+            if (heroDom.shortageCount) heroDom.shortageCount.textContent = count;
+            if (heroDom.shortageNote) {
+                heroDom.shortageNote.textContent = count
+                    ? `${count}件の不足があります。シフト運用ポータルから詳細設定をご確認ください。`
+                    : '不足データはありません。';
             }
         }
 
-        function renderEmployeeDays(rows) {
-            const host = document.getElementById('employee-days');
-            host.innerHTML = '';
-            const table = document.createElement('table');
-            table.className = 'data-table';
-            const thead = document.createElement('thead');
-            thead.innerHTML = '<tr><th>従業員</th><th>勤務日数</th><th>休日日数</th><th>月日数</th></tr>';
-            table.appendChild(thead);
-            const tbody = document.createElement('tbody');
-            if (!rows || rows.length === 0) {
-                const tr = document.createElement('tr');
-                const td = document.createElement('td');
-                td.colSpan = 4;
-                td.className = 'muted';
-                td.textContent = 'データがありません';
-                tr.appendChild(td);
-                tbody.appendChild(tr);
-            } else {
-                rows.forEach(r => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<td>${r.employeeName}</td><td>${r.workDays}</td><td>${r.restDays}</td><td>${r.totalDays}</td>`;
-                    tbody.appendChild(tr);
-                });
+        function setHeroStatus(state, text) {
+            const target = state || 'idle';
+            if (heroDom.statusPill) {
+                heroDom.statusPill.classList.remove('idle', 'processing', 'success', 'error');
+                heroDom.statusPill.classList.add(target);
+                heroDom.statusPill.textContent = text || '待機中';
             }
-            table.appendChild(tbody);
-            host.appendChild(table);
-        }
-
-        function updateWorkload(data) {
-            const list = document.getElementById('workload-list');
-            list.innerHTML = '';
-            if (!data || data.length === 0) {
-                const li = document.createElement('li');
-                li.className = 'muted';
-                li.textContent = 'データがありません';
-                list.appendChild(li);
-                return;
-            }
-            data.slice(0, 5).forEach(item => {
-                const li = document.createElement('li');
-                const name = document.createElement('span');
-                name.textContent = item.employeeName;
-                const count = document.createElement('span');
-                count.textContent = `${item.shiftCount}件`;
-                li.appendChild(name);
-                li.appendChild(count);
-                list.appendChild(li);
-            });
-        }
-
-        function renderEmployeeTable(employees) {
-            const tbody = document.querySelector('#employee-table tbody');
-            tbody.innerHTML = '';
-            if (!employees || employees.length === 0) {
-                const row = document.createElement('tr');
-                const cell = document.createElement('td');
-                cell.colSpan = 4;
-                cell.className = 'muted';
-                cell.textContent = '登録されている従業員はいません';
-                row.appendChild(cell);
-                tbody.appendChild(row);
-                return;
-            }
-            employees
-                .slice()
-                .sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ja'))
-                .forEach(employee => {
-                    const row = document.createElement('tr');
-                    const nameCell = document.createElement('td');
-                    nameCell.textContent = employee.name;
-                    row.appendChild(nameCell);
-                    const roleCell = document.createElement('td');
-                    roleCell.textContent = employee.role || '-';
-                    row.appendChild(roleCell);
-                    const createdCell = document.createElement('td');
-                    createdCell.textContent = formatDateTime(employee.createdAt);
-                    row.appendChild(createdCell);
-                    const actionCell = document.createElement('td');
-                    const deleteButton = document.createElement('button');
-                    deleteButton.className = 'button danger subtle';
-                    deleteButton.type = 'button';
-                    deleteButton.textContent = '削除';
-                    deleteButton.addEventListener('click', () => deleteEmployee(employee));
-                    actionCell.appendChild(deleteButton);
-                    row.appendChild(actionCell);
-                    tbody.appendChild(row);
-                });
-        }
-
-        function renderShiftConfigTable(configs) {
-            const tbody = document.querySelector('#shift-config-table tbody');
-            tbody.innerHTML = '';
-            if (!configs || configs.length === 0) {
-                const row = document.createElement('tr');
-                const cell = document.createElement('td');
-                cell.colSpan = 6;
-                cell.className = 'muted';
-                cell.textContent = '登録されているシフト設定はありません';
-                row.appendChild(cell);
-                tbody.appendChild(row);
-                return;
-            }
-            configs
-                .slice()
-                .sort((a, b) => {
-                    const time = (a.startTime || '').localeCompare(b.startTime || '');
-                    if (time !== 0) return time;
-                    return (a.name || '').localeCompare(b.name || '', 'ja');
-                })
-                .forEach(config => {
-                    const row = document.createElement('tr');
-                    const nameCell = document.createElement('td');
-                    nameCell.textContent = config.name;
-                    row.appendChild(nameCell);
-                    const timeCell = document.createElement('td');
-                    timeCell.textContent = `${(config.startTime || '').slice(0, 5)}〜${(config.endTime || '').slice(0, 5)}`;
-                    row.appendChild(timeCell);
-                    const requiredCell = document.createElement('td');
-                    requiredCell.textContent = config.requiredEmployees;
-                    row.appendChild(requiredCell);
-                    // const targetCell = document.createElement('td'); // removed 対象列
-                    const dowCell = document.createElement('td');
-                    const labels = [];
-                    if (config.holiday) labels.push('祝');
-                    if (config.days && Array.isArray(config.days) && config.days.length > 0) {
-                        labels.push(...config.days.map(dayOfWeekLabel));
-                    } else if (config.dayOfWeek) {
-                        labels.push(dayOfWeekLabel(config.dayOfWeek));
-                    }
-                    dowCell.textContent = labels.length ? labels.join('・') : '-';
-                    row.appendChild(dowCell);
-                    // 祝日の指定は曜日欄に統合表示
-                    if (config.holiday) {
-                        dowCell.textContent = dowCell.textContent && dowCell.textContent !== '-' ? `祝・${dowCell.textContent}` : '祝';
-                    }
-                    // 祝日は曜日欄に統合したため常に'-'表示
-                    const stateCell = document.createElement('td');
-                    const badge = document.createElement('span');
-                    badge.className = `badge ${config.active ? 'active' : 'inactive'}`;
-                    badge.textContent = config.active ? '有効' : '無効';
-                    stateCell.appendChild(badge);
-                    row.appendChild(stateCell);
-                    const actionCell = document.createElement('td');
-                    const toggleButton = document.createElement('button');
-                    toggleButton.className = 'button secondary subtle';
-                    toggleButton.type = 'button';
-                    toggleButton.textContent = config.active ? '停止' : '有効化';
-                    toggleButton.addEventListener('click', () => toggleShiftConfig(config));
-                    actionCell.appendChild(toggleButton);
-                    const editButton = document.createElement('button');
-                    editButton.className = 'button subtle';
-                    editButton.type = 'button';
-                    editButton.textContent = '編集';
-                    editButton.style.marginLeft = '8px';
-                    editButton.addEventListener('click', () => startEditShiftConfig(config));
-                    actionCell.appendChild(editButton);
-                    const deleteButton = document.createElement('button');
-                    deleteButton.className = 'button danger subtle';
-                    deleteButton.type = 'button';
-                    deleteButton.textContent = '削除';
-                    deleteButton.style.marginLeft = '8px';
-                    deleteButton.addEventListener('click', () => deleteShiftConfig(config));
-                    actionCell.appendChild(deleteButton);
-                    row.appendChild(actionCell);
-                    tbody.appendChild(row);
-                });
-        }
-
-        function updateDataStats(stats) {
-            const elEmployees = document.getElementById('data-total-employees');
-            const elAssignments = document.getElementById('data-total-assignments');
-            const elUpdated = document.getElementById('data-last-updated');
-            const list = document.getElementById('data-monthly-stats');
-            if (!elEmployees || !elAssignments || !elUpdated || !list) {
-                return;
-            }
-            elEmployees.textContent = stats.totalEmployees ?? 0;
-            elAssignments.textContent = stats.totalAssignments ?? 0;
-            elUpdated.textContent = stats.lastUpdated ? formatDateTime(stats.lastUpdated) : '-';
-            list.innerHTML = '';
-            if (stats.monthlyStats && Object.keys(stats.monthlyStats).length > 0) {
-                Object.entries(stats.monthlyStats)
-                    .sort((a, b) => b[0].localeCompare(a[0]))
-                    .slice(0, 6)
-                    .forEach(([month, count]) => {
-                        const li = document.createElement('li');
-                        li.textContent = `${month}: ${count}`;
-                        list.appendChild(li);
-                    });
-            } else {
-                const li = document.createElement('li');
-                li.className = 'muted';
-                li.textContent = 'データがありません';
-                list.appendChild(li);
+            if (heroDom.statusText) {
+                heroDom.statusText.textContent = text || heroStatusHints[target] || 'ステータスを確認してください';
             }
         }
 
-        async function handleCreateEmployee(event) {
-            event.preventDefault();
-            const name = document.getElementById('employee-name').value.trim();
-            const role = document.getElementById('employee-role').value.trim();
-            if (!name) {
-                setMessage('employee-message', '氏名を入力してください。', 'error');
-                return;
-            }
+        async function handleCsvDownload(event) {
+            const btn = event?.currentTarget;
+            if (btn) btn.disabled = true;
+            const { year, month } = heroState;
             try {
-                await callApi('/api/employees', {
-                    method: 'POST',
-                    body: { name, role }
-                });
-                document.getElementById('employee-form').reset();
-                setMessage('employee-message', '従業員を追加しました。', 'success');
-                await loadEmployees();
-                await loadDataStats();
-            } catch (error) {
-                setMessage('employee-message', error.message || '従業員の追加に失敗しました。', 'error');
-            }
-        }
-
-        async function deleteEmployee(employee) {
-            if (!confirm(`${employee.name} さんを削除しますか？`)) {
-                return;
-            }
-            try {
-                await callApi(`/api/employees/${employee.id}`, { method: 'DELETE' });
-                setMessage('employee-message', '従業員を削除しました。', 'success');
-                await loadEmployees();
-                await loadDataStats();
-                await loadSchedule();
-                await loadStatistics();
-            } catch (error) {
-                setMessage('employee-message', error.message || '従業員の削除に失敗しました。', 'error');
-            }
-        }
-
-        async function deleteShiftConfig(config) {
-            if (!confirm(`「${config.name}」を削除しますか？`)) {
-                return;
-            }
-            try {
-                await callApi(`/api/config/shift/${config.id}`, { method: 'DELETE' }, { expectSuccess: false });
-                setMessage('shift-config-message', 'シフト設定を削除しました。', 'success');
-                await loadShiftConfigs();
-                // small delay to wait for async generation to persist
-                await new Promise(r => setTimeout(r, 1500));
-                await loadSchedule();
-                await loadStatistics();
-            } catch (error) {
-                setMessage('shift-config-message', error.message || 'シフト設定の削除に失敗しました。', 'error');
-            }
-        }
-
-        let editingConfigId = null;
-
-        function dayOfWeekLabel(dow) {
-            const map = { MONDAY: '月', TUESDAY: '火', WEDNESDAY: '水', THURSDAY: '木', FRIDAY: '金', SATURDAY: '土', SUNDAY: '日' };
-            return map[dow] || dow;
-        }
-
-        function startEditShiftConfig(config) {
-            editingConfigId = config.id;
-            document.getElementById('config-name').value = config.name || '';
-            document.getElementById('config-start').value = (config.startTime || '').slice(0,5);
-            document.getElementById('config-end').value = (config.endTime || '').slice(0,5);
-            document.getElementById('config-required').value = config.requiredEmployees ?? 1;
-            // 対象(平日/週末)は廃止: weekend の編集項目は無し
-            // multiple days
-            const boxes = document.querySelectorAll('#config-days input[type="checkbox"]');
-            boxes.forEach(b => b.checked = (config.days || []).includes(b.value));
-            const hol = document.getElementById('config-holiday');
-            if (hol) hol.checked = !!config.holiday;
-            const submitBtn = document.getElementById('config-submit');
-            if (submitBtn) submitBtn.textContent = '設定を更新';
-            const cancelBtn = document.getElementById('config-cancel');
-            if (cancelBtn) cancelBtn.style.display = 'inline-block';
-            setMessage('shift-config-message', '編集モードです。更新後に「設定を更新」を押してください。', 'info');
-        }
-
-        function cancelEditShiftConfig() {
-            editingConfigId = null;
-            document.getElementById('shift-config-form').reset();
-            document.getElementById('config-required').value = 4;
-            const boxes = document.querySelectorAll('#config-days input[type="checkbox"]');
-            boxes.forEach(b => b.checked = false);
-            const submitBtn2 = document.getElementById('config-submit');
-            if (submitBtn2) submitBtn2.textContent = '設定を追加';
-            const cancelBtn = document.getElementById('config-cancel');
-            if (cancelBtn) cancelBtn.style.display = 'none';
-            setMessage('shift-config-message', '', 'info');
-        }
-
-        const cancelBtnInit = document.getElementById('config-cancel');
-        if (cancelBtnInit) cancelBtnInit.addEventListener('click', cancelEditShiftConfig);
-
-        async function handleCreateShiftConfig(event) {
-            event.preventDefault();
-            const payload = {
-                name: document.getElementById('config-name').value.trim(),
-                startTime: document.getElementById('config-start').value,
-                endTime: document.getElementById('config-end').value,
-                requiredEmployees: Number(document.getElementById('config-required').value || 0),
-                // 対象(平日/週末)は廃止（送信しない）
-                dayOfWeek: null,
-                holiday: document.getElementById('config-holiday')?.checked || false,
-                days: Array.from(document.querySelectorAll('#config-days input[type="checkbox"]:checked')).map(b => b.value)
-            };
-            if (!payload.name || !payload.startTime || !payload.endTime || payload.requiredEmployees <= 0) {
-                setMessage('shift-config-message', 'すべての項目を正しく入力してください。', 'error');
-                return;
-            }
-            try {
-                if (editingConfigId) {
-                    await callApi(`/api/config/shift/${editingConfigId}`, { method: 'PUT', body: payload }, { expectSuccess: false });
-                    setMessage('shift-config-message', 'シフト設定を更新しました。', 'success');
-                } else {
-                    await callApi('/api/config/shift', { method: 'POST', body: payload }, { expectSuccess: false });
-                    setMessage('shift-config-message', 'シフト設定を追加しました。', 'success');
-                }
-                cancelEditShiftConfig();
-                await loadShiftConfigs();
-            } catch (error) {
-                setMessage('shift-config-message', error.message || 'シフト設定の追加/更新に失敗しました。', 'error');
-            }
-        }
-
-        async function toggleShiftConfig(config) {
-            try {
-                const updated = await callApi(`/api/config/shift/${config.id}/toggle`, { method: 'POST' }, { expectSuccess: false });
-                setMessage('shift-config-message', `「${updated.name}」を${updated.active ? '有効化' : '停止'}しました。`, 'success');
-                await loadShiftConfigs();
-                await loadSchedule();
-                await loadStatistics();
-            } catch (error) {
-                setMessage('shift-config-message', error.message || 'シフト設定の更新に失敗しました。', 'error');
-            }
-        }
-
-        async function downloadFile(url, suggestedName) {
-            try {
-                const response = await fetch(url, { credentials: 'include' });
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                const blob = await response.blob();
-                const disposition = response.headers.get('content-disposition');
-                const filename = getFilenameFromDisposition(disposition) || suggestedName;
+                const res = await fetch(`/api/schedule/export/csv?year=${year}&month=${month}`, { credentials: 'include' });
+                if (!res.ok) throw new Error('CSVダウンロードに失敗しました');
+                const blob = await res.blob();
                 const link = document.createElement('a');
-                const href = URL.createObjectURL(blob);
-                link.href = href;
-                link.download = filename;
+                const url = window.URL.createObjectURL(blob);
+                link.href = url;
+                link.download = `schedule-${year}-${String(month).padStart(2, '0')}.csv`;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                URL.revokeObjectURL(href);
-                setMessage('data-message', `${filename} をダウンロードしました。`, 'success');
-            } catch (error) {
-                setMessage('data-message', error.message || 'ダウンロードに失敗しました。', 'error');
+                window.URL.revokeObjectURL(url);
+            } catch (err) {
+                alert(err.message || 'CSVダウンロードに失敗しました');
+            } finally {
+                if (btn) btn.disabled = false;
             }
         }
 
@@ -1796,7 +1031,7 @@
                     throw new Error('認証が必要です');
                 }
                 const info = document.getElementById('user-info');
-                info.textContent = `ようこそ、${data.username} さん (${data.role})`;
+                if (info) info.textContent = `ようこそ、${data.username} さん (${data.role})`;
             } catch (error) {
                 window.location.href = '/login';
             }
@@ -1814,48 +1049,6 @@
 
         async function callApi(url, options = {}, config = {}) {
             const expectSuccess = config.expectSuccess !== false;
-            const timeoutMs = Number(config.timeoutMs ?? 15000);
-            const retries = Number(config.retries ?? 1);
-            const requestOptions = buildRequestOptions(options);
-            let lastError = null;
-            for (let attempt = 0; attempt <= retries; attempt++) {
-                const controller = new AbortController();
-                const id = setTimeout(() => controller.abort(), timeoutMs);
-                try {
-                    const response = await fetch(url, { ...requestOptions, signal: controller.signal });
-                    clearTimeout(id);
-                    const contentType = response.headers.get('content-type') || '';
-                    let data = null;
-                    if (contentType.includes('application/json')) {
-                        data = await response.json();
-                    } else {
-                        const text = await response.text();
-                        if (text) {
-                            try { data = JSON.parse(text); } catch { data = { message: text }; }
-                        }
-                    }
-                    if (!response.ok) {
-                        const message = data?.message || `HTTP ${response.status}`;
-                        throw new Error(message);
-                    }
-                    if (expectSuccess && data && data.success === false) {
-                        throw new Error(data.message || 'リクエストに失敗しました');
-                    }
-                    return data;
-                } catch (err) {
-                    lastError = err;
-                    clearTimeout(id);
-                    if (attempt < retries) {
-                        await new Promise(r => setTimeout(r, 500 * (attempt + 1)));
-                        continue;
-                    }
-                    throw err;
-                }
-            }
-            throw lastError ?? new Error('Unknown error');
-        }
-
-        function buildRequestOptions(options = {}) {
             const requestOptions = {
                 credentials: 'include',
                 ...options
@@ -1867,755 +1060,28 @@
             if (requestOptions.body && typeof requestOptions.body !== 'string') {
                 requestOptions.body = JSON.stringify(requestOptions.body);
             }
-            return requestOptions;
-        }
-
-        function setMessage(id, text, type = 'info') {
-            const element = document.getElementById(id);
-            if (!element) {
-                return;
+            const response = await fetch(url, requestOptions);
+            const contentType = response.headers.get('content-type') || '';
+            let data = null;
+            if (contentType.includes('application/json')) {
+                data = await response.json();
+            } else {
+                const text = await response.text();
+                if (text) {
+                    try { data = JSON.parse(text); } catch { data = { message: text }; }
+                }
             }
-            if (!text) {
-                element.textContent = '';
-                element.style.display = 'none';
-                element.className = 'message';
-                return;
+            if (!response.ok) {
+                throw new Error(data?.message || `HTTP ${response.status}`);
             }
-            element.textContent = text;
-            element.style.display = 'block';
-            element.className = `message ${type}`;
-        }
-
-        function formatDateLabel(dateString) {
-            const date = new Date(`${dateString}T00:00:00`);
-            if (Number.isNaN(date.getTime())) {
-                return dateString;
+            if (expectSuccess && data && data.success === false) {
+                throw new Error(data.message || 'リクエストに失敗しました');
             }
-            return `${date.getMonth() + 1}月${date.getDate()}日`;
-        }
-
-        function getDayLabel(dateString) {
-            const date = new Date(`${dateString}T00:00:00`);
-            if (Number.isNaN(date.getTime())) {
-                return '';
-            }
-            const labels = ['日', '月', '火', '水', '木', '金', '土'];
-            return labels[date.getDay()];
-        }
-
-        
-
-        function formatTimeRange(start, end) {
-            const startText = start ? start.slice(0, 5) : '';
-            const endText = end ? end.slice(0, 5) : '';
-            if (!startText || !endText) {
-                return '-';
-            }
-            return `${startText}〜${endText}`;
-        }
-
-        function formatDateTime(value) {
-            if (!value) {
-                return '-';
-            }
-            const date = new Date(value);
-            if (Number.isNaN(date.getTime())) {
-                return value;
-            }
-            const y = date.getFullYear();
-            const m = String(date.getMonth() + 1).padStart(2, '0');
-            const d = String(date.getDate()).padStart(2, '0');
-            return `${y}/${m}/${d}`;
-        }
-
-        function getFilenameFromDisposition(disposition) {
-            if (!disposition) {
-                return null;
-            }
-            const utfMatch = disposition.match(/filename\*=UTF-8''([^;]+)/);
-            if (utfMatch && utfMatch[1]) {
-                return decodeURIComponent(utfMatch[1]);
-            }
-            const simpleMatch = disposition.match(/filename="?([^";]+)"?/);
-            return simpleMatch ? simpleMatch[1] : null;
+            return data;
         }
     </script>
-    <script>
-    // Override: friendlier employee-days rendering for general users
-    if (typeof renderEmployeeDays === 'function') {
-      renderEmployeeDays = function(rows) {
-        // Dedup any stray duplicate sections (keep only within #stats-card)
-        try {
-          const all = Array.from(document.querySelectorAll('#employee-days'));
-          const statsCard = document.getElementById('stats-card');
-          all.forEach((el, idx) => {
-            if (!statsCard || !statsCard.contains(el) || idx > 0) {
-              el.remove();
-            }
-          });
-        } catch (_) {}
 
-        let host = document.getElementById('employee-days');
-        if (!host) {
-          const statsCard = document.getElementById('stats-card');
-          if (statsCard) {
-            const sec = document.createElement('div'); sec.className = 'stat-subsection';
-            const header = document.createElement('div'); header.style.display='flex'; header.style.justifyContent='space-between'; header.style.alignItems='center'; header.style.gap='12px';
-                        const controls = document.createElement('div'); controls.className = 'meter-controls';
-            const b1 = document.createElement('button'); b1.type='button'; b1.id='days-view-compact'; b1.className='btn active'; b1.textContent='シンプル表示';
-            const b2 = document.createElement('button'); b2.type='button'; b2.id='days-view-table'; b2.className='btn'; b2.textContent='表形式';
-            controls.appendChild(b1); controls.appendChild(b2); header.appendChild(controls);
-            sec.appendChild(header);
-            host = document.createElement('div'); host.id='employee-days'; host.className='table-wrapper'; sec.appendChild(host);
-            const note = document.createElement('div'); note.className='meter-note'; note.textContent='勤務日数の比率をバーで表示します。表形式に切り替え可能です。'; sec.appendChild(note);
-            statsCard.appendChild(sec);
-          } else {
-            return;
-          }
-        }
-        // Ensure toggle header exists when host is present
-        try {
-          const sec = host.closest('.stat-subsection') || host.parentElement;
-          if (sec && !document.getElementById('days-view-compact')) {
-            const header = document.createElement('div'); header.style.display='flex'; header.style.justifyContent='space-between'; header.style.alignItems='center'; header.style.gap='12px';
-                        const controls = document.createElement('div'); controls.className = 'meter-controls';
-            const b1 = document.createElement('button'); b1.type='button'; b1.id='days-view-compact'; b1.className='btn active'; b1.textContent='シンプル表示';
-            const b2 = document.createElement('button'); b2.type='button'; b2.id='days-view-table'; b2.className='btn'; b2.textContent='表形式';
-            controls.appendChild(b1); controls.appendChild(b2); header.appendChild(controls);
-            sec.insertBefore(header, host);
-            const note = document.createElement('div'); note.className='meter-note'; note.textContent='勤務日数の比率をバーで表示します。表形式に切り替え可能です。';
-            sec.appendChild(note);
-          }
-        } catch (_) {}
-        host.innerHTML = '';
-        function renderCompact() {
-          host.innerHTML = '';
-          const list = document.createElement('div');
-          list.className = 'meter-list';
-          const sorted = (rows || []).slice().sort((a,b) => b.workDays - a.workDays);
-          const max = sorted.length > 10 ? 10 : sorted.length;
-          for (let i = 0; i < sorted.length; i++) {
-            const r = sorted[i];
-            const row = document.createElement('div'); row.className = 'meter-row';
-            const name = document.createElement('div'); name.className = 'name'; name.textContent = r.employeeName;
-            const bar = document.createElement('div'); bar.className = 'bar';
-            const span = document.createElement('span');
-            const ratio = r.totalDays > 0 ? Math.max(0, Math.min(100, Math.round((r.workDays / r.totalDays) * 100))) : 0;
-            span.style.width = ratio + '%';
-            bar.appendChild(span);
-            const value = document.createElement('div'); value.className = 'value'; value.textContent = `${r.workDays}/${r.restDays}日`;
-            row.appendChild(name); row.appendChild(bar); row.appendChild(value);
-            list.appendChild(row);
-            if (i === max - 1 && sorted.length > max) {
-              const more = document.createElement('div'); more.className = 'meter-note'; more.textContent = `ほか ${sorted.length - max} 名`;
-              list.appendChild(more);
-              break;
-            }
-          }
-          host.appendChild(list);
-        }
-        function renderTable() {
-          host.innerHTML = '';
-          const table = document.createElement('table'); table.className = 'data-table';
-          const thead = document.createElement('thead');
-          thead.innerHTML = '<tr><th>従業員</th><th>勤務日数</th><th>休日日数</th><th>月日数</th></tr>';
-          table.appendChild(thead);
-          const tbody = document.createElement('tbody');
-          if (!rows || rows.length === 0) {
-            const tr = document.createElement('tr'); const td = document.createElement('td'); td.colSpan = 4; td.className = 'muted'; td.textContent = 'データはありません'; tr.appendChild(td); tbody.appendChild(tr);
-          } else {
-            rows.forEach(r => { const tr = document.createElement('tr'); tr.innerHTML = `<td>${r.employeeName}</td><td>${r.workDays}</td><td>${r.restDays}</td><td>${r.totalDays}</td>`; tbody.appendChild(tr); });
-          }
-          table.appendChild(tbody);
-          host.appendChild(table);
-        }
-        // Hook toggle buttons if present
-        const btnCompact = document.getElementById('days-view-compact');
-        const btnTable = document.getElementById('days-view-table');
-        if (btnCompact && btnTable && !btnCompact._wired) {
-          btnCompact._wired = true;
-          const setActive = (compact) => {
-            if (compact) { btnCompact.classList.add('active'); btnTable.classList.remove('active'); renderCompact(); }
-            else { btnTable.classList.add('active'); btnCompact.classList.remove('active'); renderTable(); }
-          };
-          btnCompact.onclick = () => setActive(true);
-          btnTable.onclick = () => setActive(false);
-        }
-        renderCompact();
-      }
-    }
-</script>
-<script>
-// Manual editor logic (independent of main script)
-async function callApi2(url, options = {}, expectSuccess = true){
-  const res = await fetch(url, { credentials:'include', headers:{'Content-Type':'application/json'}, ...options });
-  const ct = res.headers.get('content-type')||''; let data=null; if(ct.includes('json')){ try{ data=await res.json(); }catch(_){} }
-  if(!res.ok) throw new Error((data&&data.message)||('HTTP '+res.status));
-  if(expectSuccess && data && data.success===false) throw new Error(data.message||'failed');
-  return data;
-}
-async function loadEmployeesForManual(){
-  try{
-    const j=await callApi2('/api/employees');
-    const list=j.data||[];
-    const options='<option value="">選択してください</option>'+list.map(e=>`<option value="${e.id}">${e.name||( 'Emp#'+e.id )}</option>`).join('');
-    const sel=document.getElementById('man-employee');
-    if(sel) sel.innerHTML=options;
-    const resSel=document.getElementById('res-employee');
-    if(resSel) resSel.innerHTML=options;
-  }catch(_){ }
-}
-async function refreshManualList(){
-  const date=document.getElementById('man-date')?.value; const tbody=document.getElementById('man-list'); const msg=document.getElementById('man-msg'); if(!tbody) return; tbody.innerHTML=''; if(!date){ if(msg){ msg.textContent='日付を選択してください'; msg.className='message info'; } return; }
-  try{ const y=Number(date.slice(0,4)); const m=Number(date.slice(5,7)); const res=await callApi2(`/api/schedule?year=${y}&month=${m}`); const rows=(res.data||[]).filter(a=>a.workDate===date);
-    if(!rows.length){ tbody.innerHTML='<tr><td colspan="7">データなし</td></tr>'; return; }
-    tbody.innerHTML = rows.map(r=>`<tr data-id="${r.id}"><td>${r.id}</td><td>${r.workDate}</td><td>${(r.startTime||'').slice(0,5)}</td><td>${(r.endTime||'').slice(0,5)}</td><td>${r.employeeName||''}</td><td>${r.shiftName||''}</td><td><button class="button" data-act="del" data-id="${r.id}">削除</button></td></tr>`).join('');
-    tbody.querySelectorAll('button[data-act="del"]').forEach(btn=>{ btn.addEventListener('click', async (e)=>{ const id=e.currentTarget.getAttribute('data-id'); if(!confirm(`ID=${id} を削除しますか?`)) return; try{ await callApi2(`/api/schedule/assignments/${id}`, { method:'DELETE' }); if(msg){ msg.textContent='削除しました'; msg.className='message success'; } await refreshManualList(); }catch(err){ if(msg){ msg.textContent=err.message||'削除に失敗しました'; msg.className='message error'; } } }); });
-  }catch(err){ if(msg){ msg.textContent=err.message||'取得に失敗しました'; msg.className='message error'; } }
-}
-async function createManual(){
-  const date=document.getElementById('man-date')?.value; const emp=document.getElementById('man-employee')?.value; const s=document.getElementById('man-start')?.value; const e=document.getElementById('man-end')?.value; const name=document.getElementById('man-name')?.value||'Manual'; const msg=document.getElementById('man-msg');
-  if(!date||!emp||!s||!e){ if(msg){ msg.textContent='必須項目を入力してください'; msg.className='message error'; } return; }
-  try{ await callApi2('/api/schedule/assignments', { method:'POST', body: JSON.stringify({ date, employeeId:Number(emp), startTime:s, endTime:e, shiftName:name }) }); if(msg){ msg.textContent='作成しました'; msg.className='message success'; } await refreshManualList(); }catch(err){ if(msg){ msg.textContent=err.message||'作成に失敗しました'; msg.className='message error'; } }
-}
-async function fillGapsForDay(){ const date=document.getElementById('man-date')?.value; const msg=document.getElementById('man-msg'); if(!date){ if(msg){ msg.textContent='日付を選択してください'; msg.className='message error'; } return; } try{ await callApi2(`/api/schedule/generate/demand/day?date=${date}&reset=false`, { method:'POST' }); if(msg){ msg.textContent='空きのみ埋めました'; msg.className='message success'; } await refreshManualList(); }catch(err){ if(msg){ msg.textContent=err.message||'生成に失敗しました'; msg.className='message error'; } }}
-async function fillGapsForMonth(){ const granSel=document.getElementById('granularity-select'); const gran = granSel?Number(granSel.value):60; const y=Number(document.getElementById('year-input')?.value)||new Date().getFullYear(); const m=Number(document.getElementById('month-input')?.value)|| (new Date().getMonth()+1); const msg=document.getElementById('man-msg'); try{ await callApi2(`/api/schedule/generate/demand/async?year=${y}&month=${m}&granularity=${gran}&reset=false&mode=simple`, { method:'POST' }); if(msg){ msg.textContent='月全体の空きのみ埋めを開始しました'; msg.className='message success'; } }catch(err){ if(msg){ msg.textContent=err.message||'生成に失敗しました'; msg.className='message error'; } }}
-document.getElementById('man-refresh')?.addEventListener('click', refreshManualList);
-document.getElementById('man-create')?.addEventListener('click', createManual);
-document.getElementById('day-fill-gaps')?.addEventListener('click', fillGapsForDay);
-document.getElementById('month-fill-gaps')?.addEventListener('click', fillGapsForMonth);
-document.getElementById('man-date')?.addEventListener('change', refreshManualList);
-loadEmployeesForManual();
-</script>
-<script>
-// Enhance manual list with edit + update handler without touching original renderer
-function ensureManualEnhancer(){
-  const host = document.getElementById('man-list'); if(!host || host._enhanced) return; host._enhanced = true;
-  const mo = new MutationObserver(() => {
-    host.querySelectorAll('tr').forEach(tr => {
-      let last = tr.querySelector('td:last-child'); if(!last) return;
-      if (!last.querySelector('.btn-edit')) {
-        const id = tr.getAttribute('data-id'); if(!id) return;
-        const btn = document.createElement('button'); btn.className='button btn-edit'; btn.textContent='編集'; btn.addEventListener('click', ()=>{
-          const cells = tr.querySelectorAll('td');
-          const r = { id: id, workDate: cells[1]?.textContent?.trim(), startTime: cells[2]?.textContent?.trim()+':00', endTime: cells[3]?.textContent?.trim()+':00', employeeName: cells[4]?.textContent?.trim(), shiftName: cells[5]?.textContent?.trim() };
-          const idEl=document.getElementById('man-id'); if(idEl) idEl.value=r.id;
-          const d=document.getElementById('man-date'); if(d && r.workDate) d.value=r.workDate;
-          const s=document.getElementById('man-start'); if(s && r.startTime) s.value=r.startTime.slice(0,5);
-          const e=document.getElementById('man-end'); if(e && r.endTime) e.value=r.endTime.slice(0,5);
-          const n=document.getElementById('man-name'); if(n) n.value=r.shiftName||'';
-          const msg=document.getElementById('man-msg'); if(msg){ msg.textContent=`ID=${r.id} を編集中`; msg.className='message info'; }
-        });
-        last.prepend(btn);
-      }
-    });
-  });
-  mo.observe(host, { childList:true, subtree:false });
-}
-
-async function updateManual(){
-  const id=document.getElementById('man-id')?.value; const emp=document.getElementById('man-employee')?.value; const s=document.getElementById('man-start')?.value; const e=document.getElementById('man-end')?.value; const name=document.getElementById('man-name')?.value; const msg=document.getElementById('man-msg');
-  if(!id){ if(msg){ msg.textContent='編集対象を選択してください'; msg.className='message error'; } return; }
-  try { const body={}; if(emp) body.employeeId=Number(emp); if(s) body.startTime=s; if(e) body.endTime=e; if(name) body.shiftName=name; const res = await callApi2(`/api/schedule/assignments/${id}`, { method:'PUT', body: JSON.stringify(body) }); if(msg){ msg.textContent=res.message||'更新しました'; msg.className='message success'; } await refreshManualList(); }
-  catch(err){ if(msg){ msg.textContent=err.message||'更新に失敗しました'; msg.className='message error'; } }
-}
-
-ensureManualEnhancer();
-document.getElementById('man-update')?.addEventListener('click', updateManual);
-</script>
-  <script>
-    // Override monthly stats render to a stable container
-    function updateMonthlyStats(data){
-      const host = document.getElementById('monthly-stats2') || document.getElementById('monthly-stats');
-      if (!host) return;
-      if (!data){ host.innerHTML = '<div class="muted">データなし</div>'; return; }
-      const byType = data.shiftsByType || {};
-      const rows = Object.entries(byType).map(([k,v])=>`<tr><td>${k||'-'}</td><td>${v}</td></tr>`).join('');
-      host.innerHTML = `
-        <table>
-          <thead><tr><th>項目</th><th>値</th></tr></thead>
-          <tbody>
-            <tr><td>月</td><td>${data.month||'-'}</td></tr>
-            <tr><td>総シフト数</td><td>${data.totalShifts??0}</td></tr>
-            <tr><td>ユニーク従業員数</td><td>${data.uniqueEmployees??0}</td></tr>
-            <tr><td colspan="2"><strong>シフト種別内訳</strong></td></tr>
-            ${rows || '<tr><td colspan="2" class="muted">内訳なし</td></tr>'}
-          </tbody>
-        </table>`;
-      // Mirror to compact counters and legacy list
-      const totalEl = document.getElementById('stat-total-shifts'); if (totalEl) totalEl.textContent = data.totalShifts ?? 0;
-      const uniqEl = document.getElementById('stat-unique-employees'); if (uniqEl) uniqEl.textContent = data.uniqueEmployees ?? 0;
-      const list = document.getElementById('shift-type-list');
-      if (list) {
-        list.innerHTML = '';
-        Object.entries(byType).sort((a,b)=>b[1]-a[1]).forEach(([name,count])=>{
-          const li = document.createElement('li'); li.textContent = `${name||'-'}: ${count}`; list.appendChild(li);
-        });
-      }
-    }
-    async function loadFreeDaily(){
-      const host = document.getElementById('free-daily-body');
-      if (!host) return;
-      host.innerHTML = '<tr><td colspan="2" class="muted">読み込み中...</td></tr>';
-      const ySel = document.getElementById('year');
-      const mSel = document.getElementById('month');
-      const year = ySel ? parseInt(ySel.value,10) : new Date().getFullYear();
-      const month = mSel ? parseInt(mSel.value,10) : (new Date().getMonth()+1);
-      try{
-        const res = await callApi(`/api/schedule/stats/free-daily?year=${year}&month=${month}`);
-        const list = (res && res.data) ? res.data : [];
-        if (!list.length){ host.innerHTML = '<tr><td colspan="2" class="muted">データなし</td></tr>'; return; }
-        host.innerHTML = list.map(r => `<tr><td>${r.date}</td><td>${r.freeCount}</td></tr>`).join('');
-      }catch(e){ host.innerHTML = '<tr><td colspan="2" class="muted">取得に失敗しました</td></tr>'; }
-    }
-    document.getElementById('refresh-free')?.addEventListener('click', loadFreeDaily);
-    // Hook stats refresh to also refresh FREE widget
-    document.getElementById('refresh-stats')?.addEventListener('click', ()=>{ loadFreeDaily(); loadOffDaily(); });
-    // Initial load after DOM ready (defer assumed)
-    try { loadFreeDaily(); loadOffDaily(); } catch {}
-
-    async function loadOffDaily(){
-      const host = document.getElementById('off-daily-body');
-      if (!host) return;
-      host.innerHTML = '<tr><td colspan="2" class="muted">読み込み中...</td></tr>';
-      const ySel = document.getElementById('year');
-      const mSel = document.getElementById('month');
-      const year = ySel ? parseInt(ySel.value,10) : new Date().getFullYear();
-      const month = mSel ? parseInt(mSel.value,10) : (new Date().getMonth()+1);
-      try{
-        const res = await callApi(`/api/schedule/stats/off-daily?year=${year}&month=${month}`);
-        const list = (res && res.data) ? res.data : [];
-        if (!list.length){ host.innerHTML = '<tr><td colspan="2" class="muted">データなし</td></tr>'; return; }
-        host.innerHTML = list.map(r => `<tr><td>${r.date}</td><td>${r.offCount}</td></tr>`).join('');
-      }catch(e){ host.innerHTML = '<tr><td colspan="2" class="muted">取得に失敗しました</td></tr>'; }
-    }
-    document.getElementById('refresh-off')?.addEventListener('click', loadOffDaily);
-  </script>
-  <script>
-    (() => {
-      const statusMap = { PENDING: '待機', APPLIED: '反映済み', CANCELLED: 'キャンセル' };
-
-      function pad2(num) { return String(num).padStart(2, '0'); }
-
-      function getSelectedYearMonth() {
-        const now = new Date();
-        const y = document.getElementById('year-input');
-        const m = document.getElementById('month-input');
-        return {
-          year: y ? (parseInt(y.value, 10) || now.getFullYear()) : now.getFullYear(),
-          month: m ? (parseInt(m.value, 10) || (now.getMonth() + 1)) : (now.getMonth() + 1)
-        };
-      }
-
-      function ensureManualHeader() {
-        const headerRow = document.querySelector('#manual-edit-card thead tr');
-        if (headerRow && headerRow.childElementCount < 8) {
-          headerRow.innerHTML = '<th>ID</th><th>日付</th><th>開始</th><th>終了</th><th>従業員</th><th>シフト名</th><th>種別</th><th>操作</th>';
-        }
-      }
-
-      async function convertFreeToLeave(id) {
-        const msg = document.getElementById('man-msg');
-        try {
-          await callApi2(`/api/schedule/assignments/${id}/convert-leave`, { method: 'POST' });
-          if (msg) { msg.textContent = 'FREE枠を有給に変更しました'; msg.className = 'message success'; }
-          await refreshManualList();
-        } catch (err) {
-          if (msg) { msg.textContent = err.message || '有給への変更に失敗しました'; msg.className = 'message error'; }
-        }
-      }
-
-      const originalRefreshManualList = refreshManualList;
-
-      const enhancedRefreshManualList = async function () {
-        ensureManualHeader();
-        const date = document.getElementById('man-date')?.value;
-        const tbody = document.getElementById('man-list');
-        const msg = document.getElementById('man-msg');
-        if (!tbody) return;
-        tbody.innerHTML = '';
-        if (!date) {
-          if (msg) { msg.textContent = '日付を選択してください'; msg.className = 'message info'; }
-          return;
-        }
-        try {
-          const y = Number(date.slice(0, 4));
-          const m = Number(date.slice(5, 7));
-          const res = await callApi2(`/api/schedule?year=${y}&month=${m}`);
-          const rows = (res.data || []).filter(a => a.workDate === date);
-          if (!rows.length) {
-            tbody.innerHTML = '<tr><td colspan="8">データがありません</td></tr>';
-            return;
-          }
-          tbody.innerHTML = rows.map(r => {
-            const typeLabel = r.isLeave ? '有給' : (r.isOff ? 'OFF' : (r.isFree ? 'FREE' : ''));
-            const buttons = [`<button class="button" data-act="del" data-id="${r.id}">削除</button>`];
-            if (r.isFree) {
-              buttons.push(`<button class="button ghost" data-act="leave" data-id="${r.id}">FREE→有給</button>`);
-            }
-            return `<tr data-id="${r.id}">
-              <td>${r.id}</td>
-              <td>${r.workDate}</td>
-              <td>${(r.startTime || '').slice(0, 5)}</td>
-              <td>${(r.endTime || '').slice(0, 5)}</td>
-              <td>${r.employeeName || ''}</td>
-              <td>${r.shiftName || ''}</td>
-              <td>${typeLabel || ''}</td>
-              <td>${buttons.join(' ')}</td>
-            </tr>`;
-          }).join('');
-          tbody.querySelectorAll('button[data-act="del"]').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-              const id = e.currentTarget.getAttribute('data-id');
-              if (!confirm(`ID=${id} を削除しますか?`)) return;
-              try {
-                await callApi2(`/api/schedule/assignments/${id}`, { method: 'DELETE' });
-                if (msg) { msg.textContent = '削除しました'; msg.className = 'message success'; }
-                await refreshManualList();
-              } catch (err) {
-                if (msg) { msg.textContent = err.message || '削除に失敗しました'; msg.className = 'message error'; }
-              }
-            });
-          });
-          tbody.querySelectorAll('button[data-act="leave"]').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-              const id = e.currentTarget.getAttribute('data-id');
-              if (!id) return;
-              await convertFreeToLeave(id);
-            });
-          });
-        } catch (err) {
-          if (msg) { msg.textContent = err.message || '取得に失敗しました'; msg.className = 'message error'; }
-        }
-      };
-
-      refreshManualList = enhancedRefreshManualList;
-      document.getElementById('man-refresh')?.removeEventListener('click', originalRefreshManualList);
-      document.getElementById('man-date')?.removeEventListener('change', originalRefreshManualList);
-
-      function setReservationMessage(text, type) {
-        const msg = document.getElementById('res-msg');
-        if (!msg) return;
-        msg.textContent = text || '';
-        msg.className = type ? `message ${type}` : 'message';
-      }
-
-      function syncReservationRangeToMonth(refresh = false) {
-        const startEl = document.getElementById('res-range-start');
-        const endEl = document.getElementById('res-range-end');
-        if (!startEl || !endEl) return;
-        const { year, month } = getSelectedYearMonth();
-        startEl.value = `${year}-${pad2(month)}-01`;
-        const lastDay = new Date(year, month, 0).getDate();
-        endEl.value = `${year}-${pad2(month)}-${pad2(lastDay)}`;
-        if (refresh) refreshReservationList();
-      }
-
-      function clearReservationForm(resetRange = false) {
-        const today = new Date();
-        const dateInput = document.getElementById('res-date');
-        if (dateInput) {
-          dateInput.value = `${today.getFullYear()}-${pad2(today.getMonth() + 1)}-${pad2(today.getDate())}`;
-        }
-        const startInput = document.getElementById('res-start');
-        if (startInput) startInput.value = '09:00';
-        const endInput = document.getElementById('res-end');
-        if (endInput) endInput.value = '18:00';
-        const labelInput = document.getElementById('res-label');
-        if (labelInput) labelInput.value = 'Reservation';
-        const noteInput = document.getElementById('res-note');
-        if (noteInput) noteInput.value = '';
-        const empSelect = document.getElementById('res-employee');
-        if (empSelect) empSelect.value = '';
-        const skillSelect = document.getElementById('res-skill');
-        if (skillSelect) skillSelect.value = '';
-        if (resetRange) syncReservationRangeToMonth(false);
-        setReservationMessage('', '');
-      }
-
-      function initReservationDefaults() {
-        clearReservationForm(true);
-      }
-
-      async function loadSkillsForReservation() {
-        try {
-          const res = await callApi2('/api/skills');
-          const list = res.data || [];
-          const optionHtml = list.map(s => `<option value="${s.id}">${s.code || s.name || ('Skill#' + s.id)}</option>`).join('');
-          const applyOptions = (id, fallbackLabel) => {
-            const select = document.getElementById(id);
-            if (!select) return;
-            const placeholder = select.querySelector('option[value=""]')?.textContent || fallbackLabel || '未選択';
-            select.innerHTML = `<option value="">${placeholder}</option>${optionHtml}`;
-          };
-          applyOptions('res-skill', '未選択');
-          applyOptions('t_skill', 'すべて');
-          applyOptions('b_skill', 'スキル未指定');
-        } catch (_e) { }
-      }
-
-      async function refreshReservationList() {
-        const tbody = document.getElementById('res-list');
-        if (!tbody) return;
-        const start = document.getElementById('res-range-start')?.value;
-        const end = document.getElementById('res-range-end')?.value;
-        if (!start || !end) {
-          setReservationMessage('表示期間を設定してください', 'error');
-          tbody.innerHTML = '';
-          return;
-        }
-        if (start > end) {
-          setReservationMessage('開始日は終了日以前にしてください', 'error');
-          return;
-        }
-        try {
-          const res = await callApi2(`/api/schedule/reservations?start=${start}&end=${end}`);
-          const rows = res.data || [];
-          if (!rows.length) {
-            tbody.innerHTML = '<tr><td colspan="9">予約がありません</td></tr>';
-            setReservationMessage('該当する予約はありません', 'info');
-            return;
-          }
-          const shortTime = (v) => (v || '').slice(0, 5);
-          tbody.innerHTML = rows.map(r => {
-            const timeRange = `${shortTime(r.startTime)}-${shortTime(r.endTime)}`;
-            const actions = [];
-            if (r.status === 'PENDING') {
-              actions.push(`<button class="button ghost" data-act="cancel" data-id="${r.id}">キャンセル</button>`);
-            } else if (r.status === 'CANCELLED') {
-              actions.push(`<button class="button ghost" data-act="pending" data-id="${r.id}">再開</button>`);
-            }
-            actions.push(`<button class="button danger" data-act="delete" data-id="${r.id}">削除</button>`);
-            return `<tr data-id="${r.id}">
-              <td>${r.id}</td>
-              <td>${r.workDate}</td>
-              <td>${timeRange}</td>
-              <td>${r.employeeName || ''}</td>
-              <td>${r.skillCode || '-'}</td>
-              <td>${r.label || ''}</td>
-              <td>${statusMap[r.status] || r.status || '-'}</td>
-              <td>${r.note || ''}</td>
-              <td>${actions.join(' ')}</td>
-            </tr>`;
-          }).join('');
-          tbody.querySelectorAll('button[data-act="cancel"]').forEach(btn => {
-            btn.addEventListener('click', () => updateReservationStatus(btn.getAttribute('data-id'), 'CANCELLED'));
-          });
-          tbody.querySelectorAll('button[data-act="pending"]').forEach(btn => {
-            btn.addEventListener('click', () => updateReservationStatus(btn.getAttribute('data-id'), 'PENDING'));
-          });
-          tbody.querySelectorAll('button[data-act="delete"]').forEach(btn => {
-            btn.addEventListener('click', () => {
-              const id = btn.getAttribute('data-id');
-              if (!id) return;
-              if (confirm(`ID=${id} の予約を削除しますか?`)) {
-                deleteReservation(id);
-              }
-            });
-          });
-          setReservationMessage('', '');
-        } catch (err) {
-          setReservationMessage(err.message || '予約の取得に失敗しました', 'error');
-        }
-      }
-
-      async function createReservation() {
-        const payload = {
-          workDate: document.getElementById('res-date')?.value,
-          employeeId: Number(document.getElementById('res-employee')?.value || 0),
-          skillId: document.getElementById('res-skill')?.value ? Number(document.getElementById('res-skill').value) : null,
-          startTime: document.getElementById('res-start')?.value,
-          endTime: document.getElementById('res-end')?.value,
-          label: document.getElementById('res-label')?.value || 'Reservation',
-          note: document.getElementById('res-note')?.value || ''
-        };
-        if (!payload.workDate || !payload.employeeId || !payload.startTime || !payload.endTime) {
-          setReservationMessage('日付・従業員・時間を入力してください', 'error');
-          return;
-        }
-        try {
-          await callApi2('/api/schedule/reservations', { method: 'POST', body: JSON.stringify(payload) });
-          setReservationMessage('予約を登録しました', 'success');
-          clearReservationForm(false);
-          await refreshReservationList();
-        } catch (err) {
-          setReservationMessage(err.message || '予約の登録に失敗しました', 'error');
-        }
-      }
-
-      async function deleteReservationsInRange() {
-        const start = document.getElementById('res-range-start')?.value;
-        const end = document.getElementById('res-range-end')?.value;
-        if (!start || !end) {
-          setReservationMessage('表示期間を設定してください', 'error');
-          return;
-        }
-        if (end < start) {
-          setReservationMessage('開始日は終了日以前にしてください', 'error');
-          return;
-        }
-        if (!confirm(`期間 ${start} 〜 ${end} の予約をすべて削除しますか？`)) return;
-        try {
-          await callApi2(`/api/schedule/reservations/bulk?start=${start}&end=${end}`, { method: 'DELETE' });
-          setReservationMessage('指定期間の予約を削除しました', 'success');
-          await refreshReservationList();
-        } catch (err) {
-          setReservationMessage(err.message || '一括削除に失敗しました', 'error');
-        }
-      }
-
-      async function updateReservationStatus(id, status) {
-        if (!id) return;
-        try {
-          await callApi2(`/api/schedule/reservations/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) });
-          setReservationMessage('ステータスを更新しました', 'success');
-          await refreshReservationList();
-        } catch (err) {
-          setReservationMessage(err.message || 'ステータスの更新に失敗しました', 'error');
-        }
-      }
-
-      async function deleteReservation(id) {
-        try {
-          await callApi2(`/api/schedule/reservations/${id}`, { method: 'DELETE' });
-          setReservationMessage('予約を削除しました', 'success');
-          await refreshReservationList();
-        } catch (err) {
-          setReservationMessage(err.message || '削除に失敗しました', 'error');
-        }
-      }
-
-      async function loadTimelineGrid() {
-        const timesCol = document.getElementById('t_times');
-        const rowsCol = document.getElementById('t_rows');
-        if (!timesCol || !rowsCol) return;
-        const date = document.getElementById('res-date')?.value;
-        if (!date) {
-          timesCol.innerHTML = '';
-          rowsCol.innerHTML = '<div class="muted">日付を選択するとタイムラインを表示します</div>';
-          return;
-        }
-        const gran = document.getElementById('t_gran')?.value || '60';
-        const skillId = document.getElementById('t_skill')?.value || '';
-        rowsCol.innerHTML = '<div class="muted">読み込み中...</div>';
-        timesCol.innerHTML = '';
-        try {
-          let url = `/api/schedule/grid/day?date=${date}&granularity=${gran}`;
-          if (skillId) url += `&skillId=${skillId}`;
-          const res = await fetch(url, { credentials: 'include' });
-          if (!res.ok) throw new Error('タイムラインの取得に失敗しました');
-          const data = await res.json();
-          const slots = (data && data.data && data.data.slots) || [];
-          if (!slots.length) {
-            rowsCol.innerHTML = '<div class="muted">データがありません</div>';
-            return;
-          }
-          timesCol.innerHTML = slots.map(s => `<div style="padding:6px 8px; border-bottom:1px dashed #e2e8f0;">${s.start}</div>`).join('');
-          rowsCol.innerHTML = slots.map(s => {
-            const badgeColor = (s.shortage || 0) > 0 ? '#fee2e2' : '#e0f2fe';
-            const badgeText = (s.shortage || 0) > 0 ? '#7f1d1d' : '#075985';
-            const badge = `<span style="margin-right:10px; padding:2px 8px; border-radius:999px; font-size:12px; background:${badgeColor}; color:${badgeText};">${s.assigned}/${s.required}</span>`;
-            const names = (s.employees || []).map(n => `<span style="background:#eef2ff; color:#3730a3; border-radius:999px; padding:2px 8px; margin:0 4px 4px 0; display:inline-block;">${n}</span>`).join('');
-            return `<div style="padding:6px 8px; border-bottom:1px dashed #e2e8f0;">${badge}${names || '<span class="muted">割当なし</span>'}</div>`;
-          }).join('');
-        } catch (err) {
-          rowsCol.innerHTML = `<div class="muted">${err.message || 'タイムラインの取得に失敗しました'}</div>`;
-        }
-      }
-
-      async function addBoostDemand() {
-        const msg = document.getElementById('b_msg');
-        if (!msg) return;
-        const date = document.getElementById('res-date')?.value;
-        if (!date) {
-          msg.textContent = '日付を選択してください';
-          msg.style.color = '#b91c1c';
-          return;
-        }
-        const start = document.getElementById('b_start')?.value;
-        const end = document.getElementById('b_end')?.value;
-        let seats = Number(document.getElementById('b_seats')?.value || 1);
-        const skillId = document.getElementById('b_skill')?.value;
-        if (!start || !end || start >= end) {
-          msg.textContent = '時間帯を確認してください';
-          msg.style.color = '#b91c1c';
-          return;
-        }
-        if (seats < 1) seats = 1;
-        try {
-          await callApi2('/api/demand', {
-            method: 'POST',
-            body: JSON.stringify({
-              date,
-              dayOfWeek: null,
-              startTime: start,
-              endTime: end,
-              requiredSeats: seats,
-              skillId: skillId ? Number(skillId) : null
-            })
-          });
-          msg.textContent = '一時需要を追加しました';
-          msg.style.color = '#15803d';
-          await loadTimelineGrid();
-          const viewerDate = document.getElementById('view-date');
-          if (viewerDate && viewerDate.value === date) {
-            await loadEffective();
-          }
-        } catch (err) {
-          msg.textContent = err.message || '追加に失敗しました';
-          msg.style.color = '#b91c1c';
-        }
-      }
-
-      async function downloadScheduleCsv() {
-        const { year, month } = getSelectedYearMonth();
-        const btn = document.getElementById('download-csv');
-        if (btn) btn.disabled = true;
-        try {
-          const res = await fetch(`/api/schedule/export/csv?year=${year}&month=${month}`, { credentials: 'include' });
-          if (!res.ok) throw new Error('CSVダウンロードに失敗しました');
-          const blob = await res.blob();
-          const link = document.createElement('a');
-          const url = window.URL.createObjectURL(blob);
-          link.href = url;
-          link.download = `schedule-${year}-${pad2(month)}.csv`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          window.URL.revokeObjectURL(url);
-        } catch (err) {
-          alert(err.message || 'CSVダウンロードに失敗しました');
-        } finally {
-          if (btn) btn.disabled = false;
-        }
-      }
-
-      document.getElementById('res-create')?.addEventListener('click', createReservation);
-      document.getElementById('res-refresh')?.addEventListener('click', refreshReservationList);
-      document.getElementById('res-range-sync')?.addEventListener('click', () => { syncReservationRangeToMonth(true); });
-      document.getElementById('res-bulk-delete')?.addEventListener('click', deleteReservationsInRange);
-      document.getElementById('res-clear')?.addEventListener('click', () => clearReservationForm(false));
-      document.getElementById('res-employee')?.addEventListener('change', () => setReservationMessage('', ''));
-      document.getElementById('res-date')?.addEventListener('change', loadTimelineGrid);
-      document.getElementById('t_gran')?.addEventListener('change', loadTimelineGrid);
-      document.getElementById('t_skill')?.addEventListener('change', loadTimelineGrid);
-      document.getElementById('t_refresh')?.addEventListener('click', loadTimelineGrid);
-      document.getElementById('b_add')?.addEventListener('click', addBoostDemand);
-      document.getElementById('download-csv')?.addEventListener('click', downloadScheduleCsv);
-      document.getElementById('man-refresh')?.addEventListener('click', refreshManualList);
-      document.getElementById('man-date')?.addEventListener('change', refreshManualList);
-      document.getElementById('year-input')?.addEventListener('change', () => syncReservationRangeToMonth(true));
-      document.getElementById('month-input')?.addEventListener('change', () => syncReservationRangeToMonth(true));
-      window.refreshReservationList = refreshReservationList;
-
-      ensureManualHeader();
-      initReservationDefaults();
-      loadSkillsForReservation()
-        .then(() => loadTimelineGrid())
-        .catch(() => loadTimelineGrid());
-      refreshReservationList();
-    })();
-  </script>
+  <script src="/js/app.js"></script>
+  
 </body>
 </html>
-

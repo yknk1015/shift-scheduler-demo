@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>レビュー / 共有ボード</title>
+  <style>
+    :root {
+      --bg: #edf2fb;
+      --card: #ffffff;
+      --border: #d7e3fc;
+      --text: #0f172a;
+      --muted: #64748b;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --danger: #dc2626;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+    h1 { margin: 0; font-size: 28px; }
+    h2 { margin: 0; font-size: 22px; }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+    .muted { color: var(--muted); }
+    .chip {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      background: #e2e8f0;
+    }
+    .chip.running { background: #fef3c7; color: #92400e; }
+    .chip.done { background: #dcfce7; color: #166534; }
+    .chip.idle { background: #e2e8f0; color: var(--muted); }
+    .card {
+      background: var(--card);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 15px 35px rgba(15, 23, 42, 0.07);
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    input, select, button {
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #fff;
+    }
+    button.primary {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+    }
+    button.ghost {
+      background: transparent;
+      border-color: rgba(37, 99, 235, 0.3);
+      color: var(--accent);
+    }
+    .stats-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+    .stat-card {
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: linear-gradient(145deg, #fff, #f7f9ff);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .stat-card span {
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+    .stat-card strong {
+      font-size: 28px;
+    }
+    .split-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td {
+      text-align: left;
+      padding: 8px 4px;
+      border-bottom: 1px solid #eef2ff;
+    }
+    th { color: var(--muted); font-weight: 600; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .message {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px dashed var(--border);
+      font-size: 13px;
+      background: #f8fafc;
+    }
+    .message.error {
+      background: #fef2f2;
+      border-color: rgba(220, 38, 38, 0.4);
+      color: var(--danger);
+    }
+    .action-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .action-links a {
+      text-decoration: none;
+      border: 1px solid rgba(37, 99, 235, 0.2);
+      padding: 8px 12px;
+      border-radius: 10px;
+      color: var(--accent);
+      font-weight: 600;
+      background: #fff;
+    }
+    @media (max-width: 640px) {
+      .page { padding: 24px 16px; }
+      .controls { flex-direction: column; align-items: stretch; }
+      input, select, button { width: 100%; }
+      .action-links { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <p class="muted">Reviewer Workspace</p>
+        <h1>レビュー / 共有ボード</h1>
+        <p class="muted">FREE残や休日配分など、レビュー観点をまとめた専用UIです。採用面接官にも説明しやすい構成にしています。</p>
+      </div>
+      <div>
+        <button class="ghost" id="back-dashboard">← シフト運用ポータルへ戻る</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="controls">
+        <label>年
+          <input type="number" id="year-input" min="2000" max="2100">
+        </label>
+        <label>月
+          <select id="month-input"></select>
+        </label>
+        <button class="primary" type="button" id="load-btn">データ読込</button>
+        <span class="chip idle" id="job-chip">待機中</span>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span>総シフト数</span>
+          <strong id="stat-total">0</strong>
+          <small class="muted">件</small>
+        </div>
+        <div class="stat-card">
+          <span>対象従業員</span>
+          <strong id="stat-employee">0</strong>
+          <small class="muted">人</small>
+        </div>
+        <div class="stat-card">
+          <span>FREE総数</span>
+          <strong id="stat-free">0</strong>
+          <small class="muted">枠 (日単位)</small>
+        </div>
+        <div class="stat-card">
+          <span>休日総数</span>
+          <strong id="stat-off">0</strong>
+          <small class="muted">枠 (日単位)</small>
+        </div>
+      </div>
+      <div class="message" id="overview-note">現在の集計: -</div>
+    </div>
+
+    <div class="split-grid">
+      <section class="card">
+        <h2>FREEが多い日</h2>
+        <p class="muted">FREE枠が集中している日を上位で表示します。レビュー会議で調整対象をすぐ共有できます。</p>
+        <table>
+          <thead>
+            <tr><th>日付</th><th>FREE枠</th></tr>
+          </thead>
+          <tbody id="free-table"></tbody>
+        </table>
+      </section>
+      <section class="card">
+        <h2>休日が少ない日</h2>
+        <p class="muted">休日日数が少ない日を抽出し、人員の休息確保をチェックします。</p>
+        <table>
+          <thead>
+            <tr><th>日付</th><th>休日枠</th></tr>
+          </thead>
+          <tbody id="off-table"></tbody>
+        </table>
+      </section>
+    </div>
+
+    <section class="card">
+      <div class="page-header" style="margin-bottom:8px;">
+        <h2>シフト構成トップ</h2>
+        <span class="muted">最多4種類をピックアップ</span>
+      </div>
+      <table>
+        <thead>
+          <tr><th>シフト名</th><th>件数</th><th>比率</th></tr>
+        </thead>
+        <tbody id="shift-table"></tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>アクション</h2>
+      <p class="muted">さらに深掘りする場合は以下のリンクを使用してください。</p>
+      <div class="action-links">
+        <a href="/demand-analytics">需要分析</a>
+        <a href="/schedule-editor">シフトグリッド</a>
+        <a href="/calendar">カレンダー表示</a>
+        <a href="/dashboard">生成ダッシュボード</a>
+        <a href="/api/schedule/export/csv" id="csv-link">CSVダウンロード</a>
+      </div>
+      <div id="review-message" class="message" style="display:none;"></div>
+    </section>
+  </div>
+<script>
+  (function() {
+    const state = {
+      year: new Date().getFullYear(),
+      month: new Date().getMonth() + 1
+    };
+    const yearInput = document.getElementById('year-input');
+    const monthInput = document.getElementById('month-input');
+    const stats = {
+      total: document.getElementById('stat-total'),
+      employee: document.getElementById('stat-employee'),
+      free: document.getElementById('stat-free'),
+      off: document.getElementById('stat-off')
+    };
+    const jobChip = document.getElementById('job-chip');
+    const overviewNote = document.getElementById('overview-note');
+    const freeTable = document.getElementById('free-table');
+    const offTable = document.getElementById('off-table');
+    const shiftTable = document.getElementById('shift-table');
+    const reviewMessage = document.getElementById('review-message');
+    const csvLink = document.getElementById('csv-link');
+
+    const populateMonths = () => {
+      const fragment = document.createDocumentFragment();
+      for (let i = 1; i <= 12; i++) {
+        const option = document.createElement('option');
+        option.value = String(i);
+        option.textContent = `${i}月`;
+        fragment.appendChild(option);
+      }
+      monthInput.innerHTML = '';
+      monthInput.appendChild(fragment);
+    };
+
+    const syncInputs = () => {
+      yearInput.value = state.year;
+      monthInput.value = String(state.month);
+      csvLink.href = `/api/schedule/export/csv?year=${state.year}&month=${state.month}`;
+    };
+
+    const setChip = (status) => {
+      jobChip.classList.remove('running', 'done', 'idle');
+      jobChip.classList.add(status);
+    };
+
+    const callApi = async (url) => {
+      const res = await fetch(url, { credentials: 'include' });
+      const ct = res.headers.get('content-type') || '';
+      const data = ct.includes('application/json') ? await res.json() : await res.text();
+      if (!res.ok) {
+        const msg = data && data.message ? data.message : 'HTTP ' + res.status;
+        throw new Error(msg);
+      }
+      if (data && data.success === false) throw new Error(data.message || '処理に失敗しました');
+      return data;
+    };
+
+    const extractData = (payload) => {
+      if (!payload) return null;
+      if (Object.prototype.hasOwnProperty.call(payload, 'data')) return payload.data;
+      return payload;
+    };
+
+    const renderTable = (element, rows, formatter) => {
+      element.innerHTML = '';
+      const table = element.closest('table');
+      const colCount = table ? table.querySelectorAll('th').length || 1 : 1;
+      if (!rows || rows.length === 0) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = colCount;
+        td.className = 'muted';
+        td.textContent = 'データがありません';
+        tr.appendChild(td);
+        element.appendChild(tr);
+        return;
+      }
+      rows.forEach(row => {
+        const tr = document.createElement('tr');
+        formatter(row).forEach(cell => {
+          const td = document.createElement('td');
+          td.textContent = cell;
+          tr.appendChild(td);
+        });
+        element.appendChild(tr);
+      });
+    };
+
+    const loadData = async () => {
+      reviewMessage.style.display = 'none';
+      reviewMessage.classList.remove('error');
+      const query = `year=${state.year}&month=${state.month}`;
+      try {
+        overviewNote.textContent = '集計中...';
+        const [monthly, freeDaily, offDaily, job] = await Promise.all([
+          callApi(`/api/schedule/stats/monthly?${query}`),
+          callApi(`/api/schedule/stats/free-daily?${query}`),
+          callApi(`/api/schedule/stats/off-daily?${query}`),
+          callApi(`/api/schedule/jobs/status?${query}`)
+        ]);
+        const monthlyData = extractData(monthly) || {};
+        const freeData = extractData(freeDaily) || [];
+        const offData = extractData(offDaily) || [];
+        const jobData = extractData(job) || {};
+
+        stats.total.textContent = monthlyData.totalShifts ?? 0;
+        stats.employee.textContent = monthlyData.uniqueEmployees ?? 0;
+        const totalFree = freeData.reduce((sum, row) => sum + Number(row.freeCount || 0), 0);
+        const totalOff = offData.reduce((sum, row) => sum + Number(row.offCount || 0), 0);
+        stats.free.textContent = totalFree;
+        stats.off.textContent = totalOff;
+
+        const peakFree = [...freeData].sort((a, b) => (b.freeCount || 0) - (a.freeCount || 0)).slice(0, 5);
+        const lowOff = [...offData].sort((a, b) => (a.offCount || 0) - (b.offCount || 0)).slice(0, 5);
+
+        renderTable(freeTable, peakFree, row => [row.date || '-', `${row.freeCount ?? 0}`]);
+        renderTable(offTable, lowOff, row => [row.date || '-', `${row.offCount ?? 0}`]);
+
+        const mix = monthlyData.shiftsByType || {};
+        const entries = Object.entries(mix)
+          .filter(([name]) => name)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 4);
+        renderTable(shiftTable, entries, ([name, count]) => {
+          const ratio = monthlyData.totalShifts ? ((count / monthlyData.totalShifts) * 100).toFixed(1) + '%' : '-';
+          return [name, String(count), ratio];
+        });
+
+        const chipState = jobData.running ? 'running' : (jobData.done ? 'done' : 'idle');
+        setChip(chipState);
+        jobChip.textContent = jobData.running ? '生成中' : (jobData.done ? '完了済み' : '待機中');
+        overviewNote.textContent = `対象: ${state.year}年${state.month}月 / 最終更新: ${(jobData.finishedAt || jobData.startedAt || '-').toString()}`;
+      } catch (error) {
+        reviewMessage.textContent = error.message || 'データ取得に失敗しました';
+        reviewMessage.classList.add('error');
+        reviewMessage.style.display = 'block';
+        overviewNote.textContent = '集計に失敗しました。';
+      }
+    };
+
+    document.getElementById('load-btn').addEventListener('click', loadData);
+    document.getElementById('back-dashboard').addEventListener('click', () => {
+      window.location.href = '/quick-access';
+    });
+    yearInput.addEventListener('change', () => {
+      const value = parseInt(yearInput.value, 10);
+      if (!Number.isNaN(value)) {
+        state.year = Math.max(2000, Math.min(2100, value));
+        syncInputs();
+      }
+    });
+    monthInput.addEventListener('change', () => {
+      const value = parseInt(monthInput.value, 10);
+      if (!Number.isNaN(value)) {
+        state.month = Math.min(12, Math.max(1, value));
+        syncInputs();
+      }
+    });
+
+    populateMonths();
+    const params = new URLSearchParams(window.location.search);
+    const yearParam = parseInt(params.get('year'), 10);
+    const monthParam = parseInt(params.get('month'), 10);
+    if (!Number.isNaN(yearParam)) state.year = yearParam;
+    if (!Number.isNaN(monthParam)) state.month = monthParam;
+    syncInputs();
+    loadData();
+  })();
+</script>
+</body>
+</html>

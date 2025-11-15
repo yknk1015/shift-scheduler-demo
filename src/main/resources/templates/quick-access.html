@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>シフト運用ポータル</title>
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --border: #dbe2f0;
+      --text: #0f172a;
+      --muted: #64748b;
+      --accent: #2563eb;
+      --accent-dark: #1d4ed8;
+      --accent-soft: #dbeafe;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI','Hiragino Sans','Yu Gothic',sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+      margin-bottom: 12px;
+    }
+    .back-link:hover { text-decoration: underline; }
+    .hero {
+      background: linear-gradient(135deg,#eff6ff,#fff);
+      border: 1px solid #c7d2fe;
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 12px 30px rgba(15,23,42,0.08);
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 30px; }
+    .hero p { margin: 0 0 18px; color: var(--muted); font-size: 15px; }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .input-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 24px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      box-shadow: 0 8px 22px rgba(15,23,42,0.06);
+    }
+    .input-card input {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 15px;
+      padding: 10px 12px;
+    }
+    .input-card small { color: var(--muted); }
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+      gap: 18px;
+    }
+    .category-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 10px 26px rgba(15,23,42,0.08);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .category-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 32px rgba(15,23,42,0.12);
+    }
+    .category-card h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+    .category-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      min-height: 38px;
+    }
+    .link-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .link-button {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      border-radius: 12px;
+      text-decoration: none;
+      border: 1px solid #e2e8f0;
+      color: var(--text);
+      background: #f8fafc;
+      font-weight: 600;
+      transition: background 0.15s ease;
+    }
+    .link-button:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent-dark);
+    }
+    .link-button span {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .chip-row {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chip {
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      background: #e2e8f0;
+      color: var(--muted);
+    }
+    .chip.primary {
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+      font-weight: 600;
+    }
+    .tips {
+      margin-top: 28px;
+      padding: 18px;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .button.primary {
+      background: linear-gradient(135deg,var(--accent),var(--accent-dark));
+      color: #fff;
+    }
+    .button.secondary {
+      background: #e2e8f0;
+      color: var(--text);
+    }
+    .button.ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <a href="/dashboard" class="back-link">← ダッシュボードに戻る</a>
+    <section class="hero">
+      <h1>シフト運用ポータル</h1>
+      <p>生成・調整・分析・マスタ整備の主要メニューをまとめた画面です。</p>
+      <div class="hero-actions">
+        <button class="button ghost" onclick="location.href='/dashboard'">ダッシュボードへ戻る</button>
+        <button class="button primary" onclick="location.href='/schedule-editor'">シフトを作成する</button>
+        <button class="button secondary" onclick="location.href='/monitor'">運用モニター</button>
+        <button class="button ghost" onclick="location.href='/review-board'">共有ボード</button>
+        <button class="button ghost" onclick="location.href='/timeline'">タイムライン</button>
+      </div>
+    </section>
+
+    <div class="input-card">
+      <div style="flex:1;">
+        <strong style="display:block;margin-bottom:4px;">リンク検索</strong>
+        <input type="search" id="link-search" placeholder="キーワードで絞り込み (例: 需要, スキル, カレンダー)">
+      </div>
+      <small id="search-status">全 0 件</small>
+    </div>
+
+    <section class="category-grid" id="link-grid">
+      <article class="category-card" data-keywords="generate builder demand analytics csv 生成 可視化 シフト 需要">
+        <h3>生成 / 可視化</h3>
+        <p>需要設定からヒートマップ分析、CSV出力まで生成に関連する画面です。</p>
+        <div class="link-stack">
+          <a class="link-button" href="/schedule-editor">シフトエディタ<span>グリッド調整と生成</span></a>
+          <a class="link-button" href="/demand">需要入力<span>需要設定</span></a>
+          <a class="link-button" href="/demand-analytics">需要分析<span>分析ダッシュボード</span></a>
+          <a class="link-button" href="/demand-supply">需要/供給ヒートマップ<span>需給バランス</span></a>
+          <a class="link-button" href="/timeline">タイムライン<span>公開前後の流れ</span></a>
+        </div>
+        <div class="chip-row">
+          <div class="chip primary">主導線</div>
+          <div class="chip">CSV</div>
+        </div>
+      </article>
+
+      <article class="category-card" data-keywords="monitor review board change calendar モニター 共有 カレンダー">
+        <h3>運用モニター</h3>
+        <p>公開ステータスや振替情報の確認に使う画面をまとめています。</p>
+        <div class="link-stack">
+          <a class="link-button" href="/monitor">オペレーションモニター<span>稼働状況サマリー</span></a>
+          <a class="link-button" href="/review-board">レビュー / 共有ボード<span>共有準備</span></a>
+          <a class="link-button" href="/calendar">公開カレンダー<span>従業員共有</span></a>
+          <a class="link-button" href="/timeline">イベントタイムライン<span>進捗の記録</span></a>
+        </div>
+        <div class="chip-row">
+          <div class="chip">通知</div>
+          <div class="chip">共有</div>
+        </div>
+      </article>
+
+      <article class="category-card" data-keywords="skill employee master スキル 従業員 休日 マスタ">
+        <h3>マスタ管理</h3>
+        <p>スキル・従業員・休日など、母集団データを整えるための画面です。</p>
+        <div class="link-stack">
+          <a class="link-button" href="/skill-management">スキル管理<span>スキル一覧・設定</span></a>
+          <a class="link-button" href="/employee-master">従業員マスタ<span>従業員一覧・設定</span></a>
+          <a class="link-button" href="/holidays">祝日設定<span>祝日・休業日カレンダー</span></a>
+          <a class="link-button" href="/setup">初期設定ガイド<span>初期設定</span></a>
+        </div>
+        <div class="chip-row">
+          <div class="chip">メンテナンス</div>
+        </div>
+      </article>
+
+      <article class="category-card" data-keywords="rules break pairing config ルール 休憩 ペアリング デバッグ">
+        <h3>ルール / チューニング</h3>
+        <p>ペアリング、休憩、デバッグなど、生成ロジックの微調整をする画面です。</p>
+        <div class="link-stack">
+          <a class="link-button" href="/rules-management">ルール管理<span>休憩・ペアリング設定</span></a>
+          <a class="link-button" href="/rules-management#breaks">休憩ルール<span>休憩ルールの詳細</span></a>
+          <a class="link-button" href="/admin-debug">管理者デバッグ<span>ログ・動作確認</span></a>
+        </div>
+        <div class="chip-row">
+          <div class="chip">上級者向け</div>
+        </div>
+      </article>
+    </section>
+  </div>
+
+  <script>
+    const cards = Array.from(document.querySelectorAll('.category-card'));
+    const status = document.getElementById('search-status');
+    const input = document.getElementById('link-search');
+
+    function updateStatus() {
+      const visible = cards.filter(card => card.style.display !== 'none').length;
+      status.textContent = `表示: ${visible} / ${cards.length}`;
+    }
+
+    input.addEventListener('input', () => {
+      const term = input.value.trim().toLowerCase();
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        const keywords = card.dataset.keywords?.toLowerCase() || '';
+        const match = !term || text.includes(term) || keywords.includes(term);
+        card.style.display = match ? 'flex' : 'none';
+      });
+      updateStatus();
+    });
+
+    updateStatus();
+  </script>
+</body>
+</html>

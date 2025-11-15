@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>オペレーションモニター</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f1f5f9;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --accent: #2563eb;
+      --accent-dark: #1d4ed8;
+      --accent-soft: #dbeafe;
+      --success-bg: #dcfce7;
+      --success-text: #14532d;
+      --error-bg: #fee2e2;
+      --error-text: #7f1d1d;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: 'Segoe UI','Hiragino Sans','ヒラギノ角ゴシック','Yu Gothic',sans-serif;
+    }
+
+    .page-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px 48px;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+
+    .page-header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .subtitle {
+      margin: 8px 0 0;
+      color: var(--text-secondary);
+    }
+
+    .user-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .user-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .section-header.compact h2 {
+      font-size: 20px;
+    }
+
+    .section-subtitle {
+      margin: 0;
+      color: var(--text-secondary);
+    }
+
+    .button {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .button.primary {
+      background: linear-gradient(135deg,var(--accent),var(--accent-dark));
+      color: #fff;
+    }
+
+    .button.secondary {
+      background: #e2e8f0;
+      color: var(--text-primary);
+    }
+
+    .button.ghost {
+      background: #fff;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .button.danger {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .period-card {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .period-controls {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .period-controls label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .period-controls input,
+    .period-controls select {
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      min-width: 90px;
+      font-size: 15px;
+    }
+
+    .period-label {
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .message {
+      display: none;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .message.info { background: var(--accent-soft); color: var(--accent-dark); display: block; }
+    .message.success { background: var(--success-bg); color: var(--success-text); display: block; }
+    .message.error { background: var(--error-bg); color: var(--error-text); display: block; }
+
+    .stat-hero {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat-hero-card {
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      border-radius: 14px;
+      padding: 16px 18px;
+      background: linear-gradient(135deg,#f8fafc,#fff);
+    }
+
+    .kpi-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .trend-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      color: #075985;
+      background: #dbeafe;
+      margin-top: 6px;
+    }
+
+    .trend-pill.alt {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .stat-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat-mini-card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    }
+
+    .stat-mini-card table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .stat-mini-card th,
+    .stat-mini-card td {
+      border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+      padding: 6px 4px;
+      text-align: left;
+    }
+
+    .stat-mini-card tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .stat-subsection-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .stat-subsection h3 {
+      margin: 8px 0;
+      font-size: 15px;
+      color: var(--text-secondary);
+    }
+
+    .ranking-list {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--text-primary);
+    }
+
+    .ranking-list li {
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .muted {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .data-hero {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .data-kpi {
+      border: 1px solid rgba(203, 213, 225, 0.8);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .data-meta {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+    }
+
+    .data-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .meter-list { display: flex; flex-direction: column; gap: 8px; }
+    .meter-row { display: grid; grid-template-columns: 160px 1fr 64px; gap: 12px; align-items: center; }
+    .meter-row .name { font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .meter-row .bar { height: 10px; background: #e5e7eb; border-radius: 999px; position: relative; overflow: hidden; }
+    .meter-row .bar > span { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, var(--accent), var(--accent-dark)); border-radius: 999px; }
+    .meter-row .value { text-align: right; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+    .meter-controls { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .meter-controls .btn { border: 1px solid var(--border); background: #fff; color: var(--text-primary); padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+    .meter-controls .btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .meter-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <header class="page-header">
+      <div>
+        <h1>オペレーションモニター</h1>
+        <p class="subtitle">統計サマリーとデータ統計を専用画面で確認します。</p>
+      </div>
+      <div class="user-actions">
+        <span id="user-info" class="muted">ユーザー情報を取得しています...</span>
+        <div class="user-buttons">
+          <button class="button ghost" onclick="location.href='/dashboard'">ダッシュボード</button>
+          <button class="button ghost" onclick="location.href='/quick-access'">シフト運用ポータル</button>
+          <button class="button danger" onclick="logout()">ログアウト</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="card period-card">
+      <div class="period-controls">
+        <button class="button ghost" id="monitor-prev">前月</button>
+        <label>
+          <span>年</span>
+          <input type="number" id="monitor-year" min="2000" max="2100">
+        </label>
+        <label>
+          <span>月</span>
+          <select id="monitor-month"></select>
+        </label>
+        <button class="button ghost" id="monitor-next">翌月</button>
+      </div>
+      <div class="period-label">対象: <strong id="monitor-period-label">-</strong></div>
+      <button class="button primary" id="monitor-refresh">最新情報を取得</button>
+    </section>
+
+    <section class="card" id="stats-card">
+      <div class="section-header compact">
+        <div>
+          <h2>統計サマリー</h2>
+          <p class="section-subtitle">今月のシフト状況と日次FREE/休日を確認します。</p>
+        </div>
+        <button class="button ghost" id="refresh-stats">更新</button>
+      </div>
+      <div id="stats-message" class="message" style="display:none;"></div>
+      <div class="stat-hero">
+        <div class="stat-hero-card">
+          <span class="kpi-label">総シフト数</span>
+          <span class="kpi-value" id="stat-total-shifts">0</span>
+          <span class="trend-pill">本月</span>
+        </div>
+        <div class="stat-hero-card">
+          <span class="kpi-label">稼働従業員</span>
+          <span class="kpi-value" id="stat-unique-employees">0</span>
+          <span class="trend-pill alt">ユニーク</span>
+        </div>
+      </div>
+      <div class="stat-mini-grid">
+        <div class="stat-mini-card" id="free-daily-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <strong>日別FREE人数</strong>
+            <button class="button ghost" id="refresh-free">更新</button>
+          </div>
+          <table>
+            <thead><tr><th>日付</th><th>FREE人数</th></tr></thead>
+            <tbody id="free-daily-body"><tr><td colspan="2" class="muted">読み込み中...</td></tr></tbody>
+          </table>
+        </div>
+        <div class="stat-mini-card" id="off-daily-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <strong>日別休日人数</strong>
+            <button class="button ghost" id="refresh-off">更新</button>
+          </div>
+          <table>
+            <thead><tr><th>日付</th><th>休日人数</th></tr></thead>
+            <tbody id="off-daily-body"><tr><td colspan="2" class="muted">読み込み中...</td></tr></tbody>
+          </table>
+        </div>
+        <div class="stat-mini-card" id="monthly-stats2">
+          <div class="muted">読み込み中...</div>
+        </div>
+      </div>
+      <div class="stat-subsection-group">
+        <div class="stat-subsection">
+          <h3>シフト種別内訳</h3>
+          <ul id="shift-type-list"></ul>
+        </div>
+        <div class="stat-subsection">
+          <h3>勤務数トップ</h3>
+          <ol id="workload-list" class="ranking-list"></ol>
+        </div>
+      </div>
+      <div class="stat-subsection">
+        <div class="section-header compact" style="margin-bottom:8px;">
+          <h3>勤務日数メーター</h3>
+          <div class="meter-controls">
+            <button type="button" class="btn active" id="days-view-compact">シンプル表示</button>
+            <button type="button" class="btn" id="days-view-table">表形式</button>
+          </div>
+        </div>
+        <div id="employee-days" class="meter-list"></div>
+        <div class="meter-note">勤務日数の比率をバーで表示します。表形式に切り替え可能です。</div>
+      </div>
+    </section>
+
+    <section class="card" id="data-card">
+      <div class="section-header compact">
+        <div>
+          <h2>データ統計</h2>
+          <p class="section-subtitle">システム全体の母数と更新状況を俯瞰します。</p>
+        </div>
+        <button class="button ghost" id="refresh-data-stats">更新</button>
+      </div>
+      <div id="data-message" class="message" style="display:none;"></div>
+      <div class="data-hero">
+        <div class="data-kpi">
+          <span class="kpi-label">従業員数</span>
+          <span class="kpi-value" id="data-total-employees">0</span>
+          <span class="muted">アクティブ</span>
+        </div>
+        <div class="data-kpi">
+          <span class="kpi-label">割当総数</span>
+          <span class="kpi-value" id="data-total-assignments">0</span>
+          <span class="muted">履歴件数</span>
+        </div>
+      </div>
+      <div class="data-meta">
+        <div>
+          <span class="kpi-label">最終更新</span>
+          <div class="muted" id="data-last-updated">-</div>
+        </div>
+        <div class="muted">（自動更新の際はステータスに反映されます）</div>
+      </div>
+      <div class="stat-subsection">
+        <h3>最近6か月の割当件数</h3>
+        <ul id="data-monthly-stats" class="data-list"></ul>
+      </div>
+    </section>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    let yearInput, monthSelect, periodLabel;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      yearInput = document.getElementById('monitor-year');
+      monthSelect = document.getElementById('monitor-month');
+      periodLabel = document.getElementById('monitor-period-label');
+      setupMonthOptions();
+      initializePeriod();
+      bindMonitorEvents();
+      loadUserInfo();
+      refreshAll();
+    });
+
+    function setupMonthOptions() {
+      if (!monthSelect) return;
+      monthSelect.innerHTML = '';
+      for (let month = 1; month <= 12; month++) {
+        const option = document.createElement('option');
+        option.value = month;
+        option.textContent = `${month}月`;
+        monthSelect.appendChild(option);
+      }
+    }
+
+    function initializePeriod() {
+      const today = new Date();
+      setMonitorPeriod(today.getFullYear(), today.getMonth() + 1);
+    }
+
+    function bindMonitorEvents() {
+      document.getElementById('monitor-prev')?.addEventListener('click', () => changeMonitorMonth(-1));
+      document.getElementById('monitor-next')?.addEventListener('click', () => changeMonitorMonth(1));
+      monthSelect?.addEventListener('change', refreshAll);
+      yearInput?.addEventListener('change', refreshAll);
+      document.getElementById('monitor-refresh')?.addEventListener('click', refreshAll);
+      document.getElementById('refresh-stats')?.addEventListener('click', () => { refreshStatistics(); });
+      document.getElementById('refresh-free')?.addEventListener('click', loadFreeDaily);
+      document.getElementById('refresh-off')?.addEventListener('click', loadOffDaily);
+      document.getElementById('refresh-data-stats')?.addEventListener('click', loadDataStats);
+    }
+
+    function changeMonitorMonth(offset) {
+      const { year, month } = getMonitorPeriod();
+      const date = new Date(year, month - 1 + offset, 1);
+      setMonitorPeriod(date.getFullYear(), date.getMonth() + 1);
+      refreshAll();
+    }
+
+    function setMonitorPeriod(year, month) {
+      if (yearInput) yearInput.value = year;
+      if (monthSelect) monthSelect.value = month;
+      if (periodLabel) periodLabel.textContent = `${year}年${month}月`;
+    }
+
+    function getMonitorPeriod() {
+      const now = new Date();
+      return {
+        year: yearInput ? (parseInt(yearInput.value, 10) || now.getFullYear()) : now.getFullYear(),
+        month: monthSelect ? (parseInt(monthSelect.value, 10) || (now.getMonth() + 1)) : (now.getMonth() + 1)
+      };
+    }
+
+    function refreshAll() {
+      refreshStatistics();
+      loadDataStats();
+    }
+
+    function refreshStatistics() {
+      loadStatistics();
+      loadFreeDaily();
+      loadOffDaily();
+    }
+
+    async function loadStatistics() {
+      const { year, month } = getMonitorPeriod();
+      setMessage('stats-message', '');
+      try {
+        const monthly = await callApi(`/api/schedule/stats/monthly?year=${year}&month=${month}`);
+        updateMonthlyStats(monthly.data);
+        const workload = await callApi(`/api/schedule/stats/employee-workload?year=${year}&month=${month}`);
+        updateWorkload(workload.data || []);
+        const days = await callApi(`/api/schedule/stats/employee-days?year=${year}&month=${month}`);
+        renderEmployeeDays(days.data || []);
+      } catch (error) {
+        updateMonthlyStats(null);
+        updateWorkload([]);
+        renderEmployeeDays([]);
+        setMessage('stats-message', error.message || '統計の取得に失敗しました。', 'error');
+      }
+    }
+
+    async function loadFreeDaily() {
+      const host = document.getElementById('free-daily-body');
+      if (!host) return;
+      host.innerHTML = '<tr><td colspan="2" class="muted">読み込み中...</td></tr>';
+      const { year, month } = getMonitorPeriod();
+      try {
+        const res = await callApi(`/api/schedule/stats/free-daily?year=${year}&month=${month}`);
+        const list = (res && res.data) ? res.data : [];
+        if (!list.length) {
+          host.innerHTML = '<tr><td colspan="2" class="muted">データなし</td></tr>';
+          return;
+        }
+        host.innerHTML = list.map(r => `<tr><td>${r.date}</td><td>${r.freeCount}</td></tr>`).join('');
+      } catch (e) {
+        host.innerHTML = '<tr><td colspan="2" class="muted">取得に失敗しました</td></tr>';
+      }
+    }
+
+    async function loadOffDaily() {
+      const host = document.getElementById('off-daily-body');
+      if (!host) return;
+      host.innerHTML = '<tr><td colspan="2" class="muted">読み込み中...</td></tr>';
+      const { year, month } = getMonitorPeriod();
+      try {
+        const res = await callApi(`/api/schedule/stats/off-daily?year=${year}&month=${month}`);
+        const list = (res && res.data) ? res.data : [];
+        if (!list.length) {
+          host.innerHTML = '<tr><td colspan="2" class="muted">データなし</td></tr>';
+          return;
+        }
+        host.innerHTML = list.map(r => `<tr><td>${r.date}</td><td>${r.offCount}</td></tr>`).join('');
+      } catch (e) {
+        host.innerHTML = '<tr><td colspan="2" class="muted">取得に失敗しました</td></tr>';
+      }
+    }
+
+    async function loadDataStats() {
+      setMessage('data-message', '');
+      try {
+        const response = await callApi('/api/data/stats');
+        updateDataStats(response.data || {});
+      } catch (error) {
+        updateDataStats({});
+        setMessage('data-message', error.message || 'データ統計の取得に失敗しました。', 'error');
+      }
+    }
+
+    function updateMonthlyStats(data) {
+      const host = document.getElementById('monthly-stats2');
+      const typeList = document.getElementById('shift-type-list');
+      const totalEl = document.getElementById('stat-total-shifts');
+      const uniqEl = document.getElementById('stat-unique-employees');
+      if (!host || !typeList || !totalEl || !uniqEl) return;
+      if (!data) {
+        host.innerHTML = '<div class="muted">データなし</div>';
+        typeList.innerHTML = '<li class="muted">データがありません</li>';
+        totalEl.textContent = '0';
+        uniqEl.textContent = '0';
+        return;
+      }
+      const byType = data.shiftsByType || {};
+      const rows = Object.entries(byType).map(([k, v]) => `<tr><td>${k || '-'}</td><td>${v}</td></tr>`).join('');
+      host.innerHTML = `
+        <table>
+          <thead><tr><th>項目</th><th>値</th></tr></thead>
+          <tbody>
+            <tr><td>月</td><td>${data.month || '-'}</td></tr>
+            <tr><td>総シフト数</td><td>${data.totalShifts ?? 0}</td></tr>
+            <tr><td>ユニーク従業員数</td><td>${data.uniqueEmployees ?? 0}</td></tr>
+            <tr><td colspan="2"><strong>シフト種別内訳</strong></td></tr>
+            ${rows || '<tr><td colspan="2" class="muted">内訳なし</td></tr>'}
+          </tbody>
+        </table>`;
+      totalEl.textContent = data.totalShifts ?? 0;
+      uniqEl.textContent = data.uniqueEmployees ?? 0;
+      typeList.innerHTML = '';
+      if (Object.keys(byType).length === 0) {
+        const li = document.createElement('li');
+        li.className = 'muted';
+        li.textContent = 'データがありません';
+        typeList.appendChild(li);
+      } else {
+        Object.entries(byType)
+          .sort((a, b) => b[1] - a[1])
+          .forEach(([name, count]) => {
+            const li = document.createElement('li');
+            li.textContent = `${name || '-'}: ${count}`;
+            typeList.appendChild(li);
+          });
+      }
+    }
+
+    function updateWorkload(data) {
+      const list = document.getElementById('workload-list');
+      if (!list) return;
+      list.innerHTML = '';
+      if (!data || data.length === 0) {
+        const li = document.createElement('li');
+        li.className = 'muted';
+        li.textContent = 'データがありません';
+        list.appendChild(li);
+        return;
+      }
+      data.slice(0, 5).forEach(item => {
+        const li = document.createElement('li');
+        const name = document.createElement('span');
+        name.textContent = item.employeeName;
+        const count = document.createElement('span');
+        count.textContent = `${item.shiftCount}件`;
+        li.appendChild(name);
+        li.appendChild(count);
+        list.appendChild(li);
+      });
+    }
+
+    function renderEmployeeDays(rows) {
+      const host = document.getElementById('employee-days');
+      const btnCompact = document.getElementById('days-view-compact');
+      const btnTable = document.getElementById('days-view-table');
+      if (!host) return;
+      const renderCompact = () => {
+        host.innerHTML = '';
+        if (!rows || rows.length === 0) {
+            host.innerHTML = '<div class="muted">データがありません</div>';
+            return;
+        }
+        const list = document.createElement('div');
+        list.className = 'meter-list';
+        const sorted = rows.slice().sort((a, b) => b.workDays - a.workDays);
+        sorted.slice(0, 10).forEach(r => {
+          const row = document.createElement('div');
+          row.className = 'meter-row';
+          row.innerHTML = `
+            <div class="name">${r.employeeName}</div>
+            <div class="bar"><span style="width:${r.totalDays ? Math.round((r.workDays / r.totalDays) * 100) : 0}%"></span></div>
+            <div class="value">${r.workDays}/${r.totalDays}日</div>
+          `;
+          list.appendChild(row);
+        });
+        if (sorted.length > 10) {
+          const note = document.createElement('div');
+          note.className = 'meter-note';
+          note.textContent = `ほか ${sorted.length - 10} 名`;
+          list.appendChild(note);
+        }
+        host.appendChild(list);
+      };
+
+      const renderTable = () => {
+        host.innerHTML = '';
+        const table = document.createElement('table');
+        table.innerHTML = '<thead><tr><th>従業員</th><th>勤務日数</th><th>休日日数</th><th>月日数</th></tr></thead>';
+        const tbody = document.createElement('tbody');
+        if (!rows || rows.length === 0) {
+          const tr = document.createElement('tr');
+          const td = document.createElement('td');
+          td.colSpan = 4;
+          td.className = 'muted';
+          td.textContent = 'データがありません';
+          tr.appendChild(td);
+          tbody.appendChild(tr);
+        } else {
+          rows.forEach(r => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${r.employeeName}</td><td>${r.workDays}</td><td>${r.restDays}</td><td>${r.totalDays}</td>`;
+            tbody.appendChild(tr);
+          });
+        }
+        table.appendChild(tbody);
+        host.appendChild(table);
+      };
+
+      const setActive = (compact) => {
+        if (btnCompact && btnTable) {
+          btnCompact.classList.toggle('active', compact);
+          btnTable.classList.toggle('active', !compact);
+        }
+        compact ? renderCompact() : renderTable();
+      };
+
+      btnCompact?.addEventListener('click', () => setActive(true));
+      btnTable?.addEventListener('click', () => setActive(false));
+      setActive(true);
+    }
+
+    function updateDataStats(stats) {
+      const elEmployees = document.getElementById('data-total-employees');
+      const elAssignments = document.getElementById('data-total-assignments');
+      const elUpdated = document.getElementById('data-last-updated');
+      const list = document.getElementById('data-monthly-stats');
+      if (!elEmployees || !elAssignments || !elUpdated || !list) {
+        return;
+      }
+      elEmployees.textContent = stats.totalEmployees ?? 0;
+      elAssignments.textContent = stats.totalAssignments ?? 0;
+      elUpdated.textContent = stats.lastUpdated ? formatDateTime(stats.lastUpdated) : '-';
+      list.innerHTML = '';
+      if (stats.monthlyStats && Object.keys(stats.monthlyStats).length > 0) {
+        Object.entries(stats.monthlyStats)
+          .sort((a, b) => b[0].localeCompare(a[0]))
+          .slice(0, 6)
+          .forEach(([month, count]) => {
+            const li = document.createElement('li');
+            li.textContent = `${month}: ${count}`;
+            list.appendChild(li);
+          });
+      } else {
+        const li = document.createElement('li');
+        li.className = 'muted';
+        li.textContent = 'データがありません';
+        list.appendChild(li);
+      }
+    }
+
+    async function loadUserInfo() {
+      try {
+        const data = await callApi('/api/auth/me', {}, { expectSuccess: false });
+        if (!data || data.success === false) throw new Error('認証が必要です');
+        const info = document.getElementById('user-info');
+        if (info) info.textContent = `ようこそ、${data.username} さん (${data.role})`;
+      } catch (error) {
+        window.location.href = '/login';
+      }
+    }
+
+    async function logout() {
+      try {
+        await callApi('/api/auth/logout', { method: 'POST' }, { expectSuccess: false });
+      } finally {
+        window.location.href = '/login?logout';
+      }
+    }
+    window.logout = logout;
+
+    async function callApi(url, options = {}, config = {}) {
+      const expectSuccess = config.expectSuccess !== false;
+      const timeoutMs = Number(config.timeoutMs ?? 15000);
+      const retries = Number(config.retries ?? 1);
+      const requestOptions = buildRequestOptions(options);
+      let lastError = null;
+      for (let attempt = 0; attempt <= retries; attempt++) {
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeoutMs);
+        try {
+          const response = await fetch(url, { ...requestOptions, signal: controller.signal });
+          clearTimeout(id);
+          const contentType = response.headers.get('content-type') || '';
+          let data = null;
+          if (contentType.includes('application/json')) {
+            data = await response.json();
+          } else {
+            const text = await response.text();
+            if (text) {
+              try { data = JSON.parse(text); } catch { data = { message: text }; }
+            }
+          }
+          if (!response.ok) {
+            const message = data?.message || `HTTP ${response.status}`;
+            throw new Error(message);
+          }
+          if (expectSuccess && data && data.success === false) {
+            throw new Error(data.message || 'リクエストに失敗しました');
+          }
+          return data;
+        } catch (err) {
+          lastError = err;
+          clearTimeout(id);
+          if (attempt < retries) {
+            await new Promise(r => setTimeout(r, 500 * (attempt + 1)));
+            continue;
+          }
+          throw err;
+        }
+      }
+      throw lastError ?? new Error('Unknown error');
+    }
+
+    function buildRequestOptions(options = {}) {
+      const requestOptions = {
+        credentials: 'include',
+        ...options
+      };
+      requestOptions.headers = {
+        'Content-Type': 'application/json',
+        ...(options.headers || {})
+      };
+      if (requestOptions.body && typeof requestOptions.body !== 'string') {
+        requestOptions.body = JSON.stringify(requestOptions.body);
+      }
+      return requestOptions;
+    }
+
+    function setMessage(id, text, type = 'info') {
+      const element = document.getElementById(id);
+      if (!element) return;
+      if (!text) {
+        element.textContent = '';
+        element.style.display = 'none';
+        element.className = 'message';
+        return;
+      }
+      element.textContent = text;
+      element.style.display = 'block';
+      element.className = `message ${type}`;
+    }
+
+    function formatDateTime(value) {
+      if (!value) return '-';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return value;
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}/${m}/${d}`;
+    }
+  </script>
+</body>
+</html>
