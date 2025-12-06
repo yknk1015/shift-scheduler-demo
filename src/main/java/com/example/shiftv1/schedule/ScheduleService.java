@@ -1663,9 +1663,9 @@ public class ScheduleService {
         LocalDate outerStart = weekStartSunday(monthStart); // may be in previous month
         LocalDate outerEnd = weekStartSunday(monthEnd).plusDays(6); // may be in next month
 
-        // Creation window: allow creating OFF inside the month, and optionally through
-        // to the first Saturday after month end
-        LocalDate creationEnd = outerEnd; // implement "翌月の土曜日まで" 作成
+        // Creation window: only mark OFF placeholders inside the requested month.
+        // Spillover weeks will be handled when their target month is generated.
+        LocalDate creationEnd = monthEnd;
         LocalDate creationStart = monthStart; // do not touch days before month start
         Map<Long, Integer> targetRestByEmp = new HashMap<>();
         for (Employee emp : employees) {
@@ -1688,7 +1688,8 @@ public class ScheduleService {
                 Long empId = emp.getId();
                 int targetRest = targetRestByEmp.getOrDefault(empId, 2);
 
-                int currentOff = 0;
+                int offBeforeWindow = 0;
+                int offInsideWindow = 0;
                 Set<LocalDate> realAssignedDays = new HashSet<>();
                 Set<LocalDate> offDays = new HashSet<>();
                 for (LocalDate d = weekStart; !d.isAfter(weekEnd); d = d.plusDays(1)) {
@@ -1711,7 +1712,11 @@ public class ScheduleService {
                         }
                     }
                     if (hasOff) {
-                        currentOff++;
+                        if (d.isBefore(creationStart)) {
+                            offBeforeWindow++;
+                        } else if (!d.isAfter(creationEnd)) {
+                            offInsideWindow++;
+                        }
                         offDays.add(d);
                     }
                     if (hasReal) {
@@ -1719,32 +1724,21 @@ public class ScheduleService {
                     }
                 }
 
-                int need = Math.max(0, targetRest - currentOff);
+                int remainingAfterCarry = Math.max(0, targetRest - offBeforeWindow);
+                if (remainingAfterCarry == 0)
+                    continue;
+                int need = Math.max(0, remainingAfterCarry - offInsideWindow);
                 if (need == 0)
                     continue;
 
-                // Select candidate days to mark OFF: prefer days inside current month portion
-                // first, then spillover after month end
+                // Select candidate days to mark OFF: only use days within the current month so
+                // neighboring months can manage their own spillover
                 List<LocalDate> candidates = new ArrayList<>();
-                // 1) within month
                 for (LocalDate d = weekStart; !d.isAfter(weekEnd); d = d.plusDays(1)) {
                     if (d.isBefore(creationStart) || d.isAfter(creationEnd))
                         continue;
-                    if (d.isAfter(monthEnd))
-                        continue; // handled in second pass
                     if (offDays.contains(d))
                         continue; // already off
-                    if (!realAssignedDays.contains(d))
-                        candidates.add(d);
-                }
-                // 2) spillover after month end up to Saturday
-                for (LocalDate d = weekStart; !d.isAfter(weekEnd); d = d.plusDays(1)) {
-                    if (d.isBefore(creationStart) || d.isAfter(creationEnd))
-                        continue;
-                    if (!d.isAfter(monthEnd))
-                        continue; // only after month end here
-                    if (offDays.contains(d))
-                        continue;
                     if (!realAssignedDays.contains(d))
                         candidates.add(d);
                 }

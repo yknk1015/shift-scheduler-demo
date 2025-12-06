@@ -289,9 +289,9 @@
     <a class="back-link" href="/quick-access">← シフト運用ポータルへ戻る</a>
     <div class="page-header">
       <div>
-        <p class="eyebrow">Demand Control Center</p>
+        <p class="eyebrow">需要管理ハブ</p>
         <h1>需要管理</h1>
-        <p class="muted">日次のモニタ、曜日設定、月次生成をまとめて操作できるように並び替えました。</p>
+        <p class="muted">日別・曜日別・月別の需要をまとめて確認・編集できる画面です。</p>
       </div>
       <div class="status-pill" id="status-pill" data-tone="neutral">待機中</div>
     </div>
@@ -333,7 +333,7 @@
               <small>曜日/祝ごとのパターン管理</small>
             </button>
             <button type="button" class="tab-link" data-tab-target="panel-monthly">
-              <span>月次プラン</span>
+              <span>月次の需要編集</span>
               <small>座席微調整と生成</small>
             </button>
           </div>
@@ -353,16 +353,16 @@
         <div class="tab-panel active" id="panel-daily">
           <section class="card" id="daily-card">
             <div class="card-heading">
-              <h3>日次の需要モニタ</h3>
-              <p>対象日を指定し、適用されている需要と全体リストを比較できます。</p>
+              <h3>日別需要の確認</h3>
+              <p>対象日を指定し、その日に適用される需要と全体の登録内容を比較できます。</p>
             </div>
             <div class="row">
               <label>日付<input type="date" id="view-date" /></label>
               <button id="btn-view-effective">当日の需要を表示</button>
               <button id="btn-view-all" class="ghost">すべて表示</button>
-              <button id="btn-view-sort" class="ghost">整頓</button>
+              <button id="btn-view-sort" class="ghost">並び替え</button>
             </div>
-            <div class="muted">整頓を押すと ID と時間帯で並び替えます。</div>
+            <div class="muted">ID と時間帯の順に並び替えます。</div>
             <div class="daily-panels">
               <div class="data-block" id="effective"></div>
               <div class="data-block" id="all"></div>
@@ -386,8 +386,8 @@
                 <div class="mini-panel">
                   <div class="mini-header">
                     <div>
-                      <h4>一時需要ブースト</h4>
-                      <p>突発的な不足分だけを登録して、生成前に需要バランスを合わせます。</p>
+                      <h4>一時的な需要追加</h4>
+                      <p>突発的な不足分だけを追加で登録し、生成前に需要バランスを整えます。</p>
                     </div>
                     <span class="chip">対象日 <span id="boost-date-label">--</span></span>
                   </div>
@@ -445,7 +445,7 @@
                   <div class="mini-header">
                     <div>
                       <h4>事前シフト予約</h4>
-                      <p>対象日に固定したい勤務者とスキル枠を登録します。</p>
+                      <p>対象日に「この人をこのスキルで固定したい」という枠を登録します。</p>
                     </div>
                     <button type="button" class="ghost" id="res-clear">フォームをリセット</button>
                   </div>
@@ -469,7 +469,7 @@
                       <input type="time" id="res-end" value="18:00" />
                     </label>
                     <label>ラベル
-                      <input type="text" id="res-label" value="Reservation" />
+                      <input type="text" id="res-label" value="事前予約" />
                     </label>
                   </div>
                   <div class="row">
@@ -485,7 +485,7 @@
                   <div class="mini-header">
                     <div>
                       <h4>予約一覧と期間管理</h4>
-                      <p>月次プランに合わせてフィルタし、状態を整理します。</p>
+                      <p>月次プランに合わせて期間を絞り込み、状態を整理できます。</p>
                     </div>
                     <button type="button" class="ghost" id="res-range-sync">月次に同期</button>
                   </div>
@@ -508,7 +508,7 @@
                           <th>時間帯</th>
                           <th>割当従業員</th>
                           <th>スキル</th>
-                          <th>メモラベル</th>
+                          <th>表示名</th>
                           <th>状態</th>
                           <th>備考</th>
                           <th></th>
@@ -527,7 +527,7 @@
           <section class="card" id="weekly-card">
             <div class="card-heading">
               <h3>曜日・祝日の需要テンプレート</h3>
-              <p>曜日別のパターンを整えてから「曜日設定で初期化」で月次データへ反映します。</p>
+              <p>曜日ごとのパターンを登録し、「曜日設定で初期化」から月次の各日に自動反映できます。</p>
             </div>
             <div class="row">
               <label>曜日/祝
@@ -571,7 +571,7 @@
               </div>
               <div class="monthly-actions">
                 <button id="btnApplyWeekly" class="ghost">曜日設定で初期化</button>
-                <button id="btnGenerate" title="需要ベースでこの月を生成">この月を生成</button>
+                <button id="btnGenerate" title="この月のシフトを需要データから自動生成します">この月を生成</button>
               </div>
             </div>
             <div class="monthly-layout" style="margin-top:16px;">
@@ -624,7 +624,7 @@
     const weeklyCache = new Map();
     const state = { year: null, month: null, days: {}, pairing: null, pairingSets: [], skills: [], selectedDate: null };
     const metrics = { effective: 0, all: 0, templates: 0 };
-    const RESERVATION_STATUS_MAP = { PENDING: '予約中', CONFIRMED: '確定', COMPLETED: '完了', CANCELLED: '停止' };
+    const RESERVATION_STATUS_MAP = { PENDING: '予約中', CONFIRMED: '確定', COMPLETED: '完了', CANCELLED: 'キャンセル' };
     const pad2 = (v) => String(v).padStart(2, '0');
     const weeklyBreakInput = document.getElementById('weekly-break');
     const weeklyBreakResetBtn = document.getElementById('weekly-break-reset');
@@ -791,7 +791,7 @@
       const end = document.getElementById('res-end');
       if (end) end.value = '18:00';
       const label = document.getElementById('res-label');
-      if (label) label.value = 'Reservation';
+      if (label) label.value = '事前予約';
       const note = document.getElementById('res-note');
       if (note) note.value = '';
       const emp = document.getElementById('res-employee');
@@ -876,7 +876,7 @@
         skillId: document.getElementById('res-skill')?.value ? Number(document.getElementById('res-skill').value) : null,
         startTime: document.getElementById('res-start')?.value,
         endTime: document.getElementById('res-end')?.value,
-        label: document.getElementById('res-label')?.value || 'Reservation',
+        label: document.getElementById('res-label')?.value || '事前予約',
         note: document.getElementById('res-note')?.value || ''
       };
       if (!payload.workDate || !payload.employeeId || !payload.startTime || !payload.endTime) {

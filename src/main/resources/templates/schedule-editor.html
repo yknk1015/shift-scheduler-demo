@@ -518,8 +518,8 @@
         </div>
         <header>
             <div>
-                <h1>シフト作成 / シフト調整</h1>
-                <p style="margin:4px 0 0;color:#4c566a;">Builderでシフト作成、下部のグリッドで担当者ごとの調整を行います。</p>
+                <h1>シフト自動生成 / グリッド調整</h1>
+                <p style="margin:4px 0 0;color:#4c566a;">シフト生成欄から生成を行い、下部のグリッドで担当者ごとのシフトを細かく調整できます。</p>
             </div>
         </header>
 
@@ -527,8 +527,8 @@
             <div class="hero-summary">
                 <div class="hero-summary-header">
                     <p class="eyebrow">Builder</p>
-                    <h2>最新のシフト生成状況</h2>
-                    <p>対象期間と不足件数をここで確認できます。</p>
+                    <h2>対象月のシフトサマリー</h2>
+                    <p>対象期間のシフト件数・従業員数・不足状況をひと目で確認できます。</p>
                 </div>
                 <div class="hero-status">
                     <span class="hero-status-pill idle" id="builder-status-pill">待機中</span>
@@ -560,7 +560,7 @@
             <div class="section-header">
                 <div>
                     <h2>シフト生成</h2>
-                    <p class="section-subtitle">対象月の自動生成・初期化・再取得をここから実行します。</p>
+                    <p class="section-subtitle">対象月のシフトを需要ベースで自動生成し、初期化や最新データの再取得もここから行えます。</p>
                 </div>
             </div>
             <div class="builder-toolbar">
@@ -610,7 +610,7 @@
             </div>
             <div class="shortage-panel" id="builder-shortage-panel" style="display:none;">
                 <div class="shortage-header">
-                    <strong>割当不足 / FREEフォロー状況</strong>
+                    <strong>割当不足とFREEの状況</strong>
                     <button class="btn btn-secondary ghost" type="button" id="builder-hide-shortage">閉じる</button>
                 </div>
                 <div class="table-container small">
@@ -624,7 +624,7 @@
                             </tr>
                         </thead>
                         <tbody id="builder-shortage-body">
-                            <tr><td colspan="4" class="muted">不足データはありません</td></tr>
+                            <tr><td colspan="4" class="muted">現在、割当不足はありません。</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -637,7 +637,7 @@
             <input type="date" id="startDate">
         </div>
         <div>
-            <label for="viewMode">ビュー</label>
+            <label for="viewMode">表示範囲</label>
             <select id="viewMode">
                 <option value="week">週次 (7日)</option>
                 <option value="month">月次</option>
@@ -649,7 +649,7 @@
             <input type="date" id="endDate">
         </div>
         <div style="align-self: flex-end;">
-            <button class="btn btn-secondary" id="loadBtn">読み込み</button>
+            <button class="btn btn-secondary" id="loadBtn">グリッドを読み込む</button>
         </div>
         <div class="status-bar" id="metaInfo"></div>
     </section>
@@ -664,7 +664,7 @@
             </div>
         </section>
         <section class="editor-panel">
-            <h2>セル/シフト編集</h2>
+            <h2>選択セルのシフト編集</h2>
             <div class="form-group">
                 <label for="employeeSelect">従業員</label>
                 <select id="employeeSelect"></select>
@@ -694,7 +694,7 @@
                     <button class="btn btn-secondary" id="breakAddBtn" type="button">休憩を追加</button>
                     <button class="btn btn-secondary ghost" id="breakSuggestBtn" type="button">推奨を反映</button>
                 </div>
-                <div class="status-bar" id="breakHint">例: 15 / 10 など自由に入力できます</div>
+                <div class="status-bar" id="breakHint">例: 15 / 10 など、分単位で自由に設定できます</div>
             </div>
             <div class="form-group chip-row chip-row--flags">
                 <label><input type="checkbox" id="flagFree"> FREE</label>
@@ -770,8 +770,14 @@
     function bindEvents() {
         dom.prev?.addEventListener('click', () => changeBuilderMonth(-1));
         dom.next?.addEventListener('click', () => changeBuilderMonth(1));
-        dom.year?.addEventListener('change', () => loadBuilderSummary(true));
-        dom.month?.addEventListener('change', () => loadBuilderSummary(true));
+        dom.year?.addEventListener('change', () => {
+            loadBuilderSummary(true);
+            syncGridRangeToBuilder();
+        });
+        dom.month?.addEventListener('change', () => {
+            loadBuilderSummary(true);
+            syncGridRangeToBuilder();
+        });
         dom.refresh?.addEventListener('click', () => loadBuilderSummary(true));
         dom.refreshSecondary?.addEventListener('click', () => loadBuilderSummary(true));
         dom.downloadCsv?.addEventListener('click', handleBuilderCsvDownload);
@@ -801,6 +807,7 @@
         const date = new Date(year, month - 1 + offset, 1);
         setBuilderPeriod(date.getFullYear(), date.getMonth() + 1);
         loadBuilderSummary();
+        syncGridRangeToBuilder();
     }
 
     function setBuilderPeriod(year, month) {
@@ -815,6 +822,40 @@
             year: dom.year ? (parseInt(dom.year.value, 10) || now.getFullYear()) : now.getFullYear(),
             month: dom.month ? (parseInt(dom.month.value, 10) || (now.getMonth() + 1)) : (now.getMonth() + 1)
         };
+    }
+
+    function formatYmd(year, month, day) {
+        const pad = (value) => String(value).padStart(2, '0');
+        return `${year}-${pad(month)}-${pad(day)}`;
+    }
+
+    function syncGridRangeToBuilder(autoReload = true) {
+        const startInput = document.getElementById('startDate');
+        const endInput = document.getElementById('endDate');
+        if (!startInput || !endInput) return;
+        const viewMode = document.getElementById('viewMode');
+        const { year, month } = getBuilderPeriod();
+        const lastDay = new Date(year, month, 0).getDate();
+        const startValue = formatYmd(year, month, 1);
+        const endValue = formatYmd(year, month, lastDay);
+
+        if (viewMode) viewMode.value = 'month';
+
+        const startChanged = startInput.value !== startValue;
+        startInput.value = startValue;
+        if (startChanged) {
+            startInput.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        const endChanged = endInput.value !== endValue;
+        endInput.value = endValue;
+        if (endChanged) {
+            endInput.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        if (autoReload) {
+            window.reloadScheduleGrid?.();
+        }
     }
 
     async function handleBuilderGenerate() {

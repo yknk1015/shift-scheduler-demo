@@ -114,7 +114,8 @@ public interface ShiftAssignmentRepository extends JpaRepository<ShiftAssignment
      */
     @Query("SELECT DISTINCT e FROM Employee e WHERE e NOT IN " +
            "(SELECT DISTINCT sa.employee FROM ShiftAssignment sa WHERE sa.workDate = :workDate " +
-           "AND ((sa.startTime < :endTime AND sa.endTime > :startTime)))")
+           "AND ((sa.startTime < :endTime AND sa.endTime > :startTime) " +
+           "     OR sa.isOff = TRUE OR sa.isLeave = TRUE))")
     List<Employee> findAvailableEmployeesForTimeSlot(@Param("workDate") LocalDate workDate,
                                                     @Param("startTime") java.time.LocalTime startTime,
                                                     @Param("endTime") java.time.LocalTime endTime);
