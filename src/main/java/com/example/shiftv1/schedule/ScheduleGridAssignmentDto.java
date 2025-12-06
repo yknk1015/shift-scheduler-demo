@@ -21,6 +21,9 @@ public record ScheduleGridAssignmentDto(
         LocalTime breakEnd,
         Integer breakMinutes,
         List<BreakDto> breaks,
+        Long skillId,
+        String skillCode,
+        String skillName,
         Boolean isFree,
         Boolean isOff,
         Boolean isLeave) {
@@ -63,6 +66,9 @@ public record ScheduleGridAssignmentDto(
                 breakEnd,
                 breakMinutes,
                 breakDtos,
+                assignment.getSkill() != null ? assignment.getSkill().getId() : null,
+                assignment.getSkill() != null ? assignment.getSkill().getCode() : null,
+                assignment.getSkill() != null ? assignment.getSkill().getName() : null,
                 normalizeFlag(assignment.getIsFree()),
                 normalizeFlag(assignment.getIsOff()),
                 normalizeFlag(assignment.getIsLeave())

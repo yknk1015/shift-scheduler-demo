@@ -116,6 +116,7 @@
       gap:4px;
       color:#0f172a;
       transition:background 0.2s,border 0.2s,transform 0.2s;
+      position:relative;
     }
     .tab-link small { display:block; color:#64748b; font-size:12px; }
     .tab-link.active {
@@ -124,6 +125,12 @@
       box-shadow:0 4px 12px rgba(37,99,235,0.12);
       transform:translateX(2px);
     }
+    .tab-link.tab-link-daily { background:#e0f2fe; border-color:#bae6fd; }
+    .tab-link.tab-link-weekly { background:#fce7f3; border-color:#fbcfe8; }
+    .tab-link.tab-link-monthly { background:#fef3c7; border-color:#fde68a; }
+    .tab-link.tab-link-daily.active { background:#ecfeff; border-color:#38bdf8; box-shadow:0 6px 18px rgba(14,165,233,0.25); }
+    .tab-link.tab-link-weekly.active { background:#fdf2f8; border-color:#f472b6; box-shadow:0 6px 18px rgba(236,72,153,0.25); }
+    .tab-link.tab-link-monthly.active { background:#fff7ed; border-color:#fbbf24; box-shadow:0 6px 18px rgba(245,158,11,0.25); }
     .helper-card h4 { margin:0 0 12px; font-size:15px; }
     .helper-card ul { margin:0 0 12px 18px; padding:0; display:flex; flex-direction:column; gap:6px; }
     .helper-card li { font-size:13px; color:#475569; }
@@ -176,7 +183,19 @@
     .message.success { color:#15803d; }
     .message.error { color:#b91c1c; }
     .message.info { color:#0f172a; opacity:0.8; }
+    .weekly-table-scroll {
+      max-height:420px;
+      overflow:auto;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:12px;
+      background:#fff;
+      margin-top:12px;
+    }
+    .weekly-table-scroll::-webkit-scrollbar { width:6px; }
+    .weekly-table-scroll::-webkit-scrollbar-thumb { background:#cbd5f5; border-radius:999px; }
     .weekly-table section { margin-top:14px; }
+    .weekly-table section:first-child { margin-top:0; }
     .weekly-table h4 { margin:0 0 6px; font-size:15px; }
     .daily-panels {
       display:grid;
@@ -273,6 +292,62 @@
     .monthly-layout { display:grid; grid-template-columns:1.1fr 1fr; gap:16px; }
     .monthly-panel { border:1px solid var(--border); border-radius:12px; padding:16px; background:#fff; }
     .monthly-actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .monthly-step { display:flex; gap:12px; align-items:flex-start; margin-top:14px; }
+    .step-badge {
+      width:28px;
+      height:28px;
+      border-radius:50%;
+      background:var(--accent-soft);
+      color:var(--accent);
+      font-weight:700;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:14px;
+    }
+    .step-body { flex:1; display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end; }
+    .step-body.column { flex-direction:column; align-items:flex-start; }
+    .quick-add-row { display:flex; flex-direction:column; gap:10px; flex:1; }
+    .quick-add-buttons { display:flex; gap:8px; flex-wrap:wrap; }
+    .quick-add-hints { list-style:none; margin:0; padding-left:0; display:flex; flex-direction:column; gap:4px; font-size:12px; color:#475569; }
+    .quick-add-hints strong { color:#0f172a; margin-right:4px; }
+    .quick-add-actions { display:flex; justify-content:flex-end; margin-top:6px; }
+    .seat-input-group { display:flex; align-items:center; gap:6px; }
+    .seat-input-group input { width:80px; text-align:center; }
+    .seat-input-group .chip-button {
+      padding:6px 10px;
+      background:#e2e8f0;
+      border:1px solid #cbd5f5;
+      border-radius:8px;
+      cursor:pointer;
+      font-size:13px;
+    }
+    .seat-stepper {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:4px 10px;
+      background:#f8fafc;
+    }
+    .seat-stepper button {
+      border:none;
+      background:transparent;
+      color:#0f172a;
+      font-size:16px;
+      cursor:pointer;
+      padding:0 4px;
+    }
+    .seat-stepper button:disabled { opacity:0.3; cursor:not-allowed; }
+    .seat-stepper .seat-count {
+      font-weight:600;
+      min-width:32px;
+      text-align:center;
+      font-variant-numeric:tabular-nums;
+    }
+    .default-seat-field input { width:80px; }
+    .list-step-heading { margin:18px 0 6px; font-weight:600; font-size:14px; color:#334155; }
     @media (max-width:1100px) {
       .workspace { flex-direction:column; }
       .sidebar { width:100%; position:static; }
@@ -324,15 +399,15 @@
         <div class="nav-card">
           <div class="nav-title">ワークスペース</div>
           <div class="tab-nav">
-            <button type="button" class="tab-link active" data-tab-target="panel-daily">
+            <button type="button" class="tab-link tab-link-daily active" data-tab-target="panel-daily">
               <span>日次モニタ</span>
               <small>日付別の需要確認と整頓</small>
             </button>
-            <button type="button" class="tab-link" data-tab-target="panel-weekly">
+            <button type="button" class="tab-link tab-link-weekly" data-tab-target="panel-weekly">
               <span>曜日テンプレ</span>
               <small>曜日/祝ごとのパターン管理</small>
             </button>
-            <button type="button" class="tab-link" data-tab-target="panel-monthly">
+            <button type="button" class="tab-link tab-link-monthly" data-tab-target="panel-monthly">
               <span>月次の需要編集</span>
               <small>座席微調整と生成</small>
             </button>
@@ -544,7 +619,7 @@
               </label>
               <label>開始<input type="time" id="weekly-start" value="09:00" /></label>
               <label>終了<input type="time" id="weekly-end" value="18:00" /></label>
-              <label>必要数<input type="number" id="weekly-required" min="0" value="5" style="width:90px" /></label>
+              <label>必要人数<input type="number" id="weekly-required" min="0" value="1" style="width:90px" /></label>
               <label>スキル<select id="weekly-skill" style="min-width:180px;"></select></label>
               <label>休憩(分)<input type="number" id="weekly-break" min="0" step="5" value="0" style="width:90px" /></label>
               <button type="button" id="weekly-break-reset" class="ghost">推奨を反映</button>
@@ -553,7 +628,9 @@
             </div>
             <div class="muted">「祝」は祝日のみ適用。推奨休憩: 6時間以上45分 / 8時間以上60分。テンプレを整えたら月次タブで初期化してください。</div>
             <div id="weekly-msg" class="message"></div>
-            <div class="weekly-table" id="weekly-table"></div>
+            <div class="weekly-table-scroll">
+              <div class="weekly-table" id="weekly-table"></div>
+            </div>
           </section>
         </div>
 
@@ -566,12 +643,9 @@
             <div class="row" style="justify-content:space-between; align-items:center;">
               <div class="row">
                 <label>年月<input type="month" id="ym" /></label>
-                <label>既定座席<input type="number" id="defaultSeats" min="0" value="5" style="width:80px;" /></label>
-                <label>スキル<select id="skillSelect" style="min-width:180px;"><option value="">選択</option></select></label>
               </div>
               <div class="monthly-actions">
                 <button id="btnApplyWeekly" class="ghost">曜日設定で初期化</button>
-                <button id="btnGenerate" title="この月のシフトを需要データから自動生成します">この月を生成</button>
               </div>
             </div>
             <div class="monthly-layout" style="margin-top:16px;">
@@ -587,25 +661,63 @@
                     <span id="panelDate" style="font-weight:600;"></span>
                     <span id="panelSummary" class="muted" style="margin-left:8px;"></span>
                   </div>
-                  <div class="row" style="gap:6px; align-items:center;">
-                    <label style="display:flex; align-items:center; gap:6px;">
-                      <span>ペアセット</span>
-                      <select id="pairPresetSelect" style="min-width:140px;">
-                        <option value="">既定</option>
-                      </select>
-                    </label>
-                    <button id="btnAddAM" class="ghost" disabled>AM追加</button>
-                    <button id="btnAddPM" class="ghost" disabled>PM追加</button>
-                    <button id="btnAddFull" class="ghost" disabled>フル追加</button>
+                </div>
+                <div class="monthly-step">
+                  <div class="step-badge">1</div>
+                  <div class="step-body">
+                    <label>開始<input type="time" id="f_start" value="09:00" /></label>
+                    <label>終了<input type="time" id="f_end" value="18:00" /></label>
                   </div>
                 </div>
-                <div class="row" style="margin-top:8px;">
-                  <label>開始<input type="time" id="f_start" value="09:00" /></label>
-                  <label>終了<input type="time" id="f_end" value="18:00" /></label>
-                  <label>座席<input type="number" id="f_seats" min="0" value="5" style="width:80px;" /></label>
-                  <button id="btnAdd">追加</button>
+                <div class="monthly-step">
+                  <div class="step-badge">2</div>
+                  <div class="step-body column">
+                    <label style="width:100%;">スキル<select id="skillSelect" style="min-width:220px;"><option value="">選択</option></select></label>
+                  </div>
+                </div>
+                <div class="monthly-step">
+                  <div class="step-badge">3</div>
+                  <div class="step-body">
+                    <label>座席
+                      <div class="seat-input-group">
+                        <button type="button" class="chip-button" data-seat-delta="-1">-</button>
+                        <input type="number" id="f_seats" min="1" value="1" />
+                        <button type="button" class="chip-button" data-seat-delta="1">+1</button>
+                      </div>
+                    </label>
+                    <label class="default-seat-field">既定座席
+                      <input type="number" id="defaultSeats" min="1" value="1" />
+                    </label>
+                  </div>
+                </div>
+                <div class="monthly-step">
+                  <div class="step-badge">4</div>
+                  <div class="step-body column">
+                    <div class="quick-add-row">
+                      <label style="display:flex; align-items:center; gap:6px; min-width:220px;">
+                        <span>ペアセット</span>
+                        <select id="pairPresetSelect" style="min-width:160px;">
+                          <option value="">既定</option>
+                        </select>
+                      </label>
+                      <div class="quick-add-buttons">
+                        <button id="btnAddAM" class="ghost" disabled>ペアの前半のみ追加</button>
+                        <button id="btnAddPM" class="ghost" disabled>ペアの後半のみ追加</button>
+                        <button id="btnAddFull" class="ghost" disabled>ペアを両方まとめて追加</button>
+                      </div>
+                      <ul class="quick-add-hints">
+                        <li id="hint-am"><strong>前半のみ追加</strong><span>午前枠を自動入力します</span></li>
+                        <li id="hint-pm"><strong>後半のみ追加</strong><span>午後枠を自動入力します</span></li>
+                        <li id="hint-full"><strong>両方まとめて追加</strong><span>終日枠を自動入力します</span></li>
+                      </ul>
+                      <div class="quick-add-actions">
+                        <button id="btnAdd">登録 / 更新</button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div id="monthly-msg" class="message"></div>
+                <div class="list-step-heading">5. 登録済みの時間帯（編集・削除）</div>
                 <div id="list"></div>
               </div>
             </div>
@@ -1074,13 +1186,12 @@
       const host = document.getElementById(id);
       const html = [];
       html.push(`<div class="muted" style="margin-bottom:6px;">${title}</div>`);
-      html.push('<table><thead><tr><th>需要ID</th><th>日付</th><th>曜日</th><th>開始</th><th>終了</th><th>必要人数</th><th>スキル</th><th>祝日</th></tr></thead><tbody>');
+      html.push('<table><thead><tr><th>日付</th><th>曜日</th><th>開始</th><th>終了</th><th>必要人数</th><th>スキル</th><th>祝日</th></tr></thead><tbody>');
       if (!rows.length) {
         html.push('<tr><td colspan="8" class="muted">データがありません</td></tr>');
       }
       rows.forEach(r => {
         html.push(`<tr>
-          <td>${r.id ?? ''}</td>
           <td>${r.date ?? ''}</td>
           <td>${resolveDayLabel(r)}</td>
           <td>${(r.startTime || '').toString().slice(0,5)}</td>
@@ -1180,7 +1291,7 @@
         document.getElementById('weekly-day').value = 'MONDAY';
         document.getElementById('weekly-start').value = '09:00';
         document.getElementById('weekly-end').value = '18:00';
-        document.getElementById('weekly-required').value = 5;
+        document.getElementById('weekly-required').value = 1;
         weeklyBreakManual = false;
         autoFillWeeklyBreak(true);
         const sel = document.getElementById('weekly-skill');
@@ -1243,7 +1354,16 @@
     }
 
     async function deleteWeekly(id) {
-      if (!confirm(`ID=${id} を削除しますか?`)) return;
+      let label = `ID=${id}`;
+      const row = weeklyCache.get(String(id));
+      if(row){
+        const dayLabel = row.holidayOnly ? (DAY_LABELS.HOLIDAY || '祝') : (DAY_LABELS[row.dayOfWeek] || row.dayOfWeek || '');
+        const start = (row.startTime || '').toString().slice(0,5);
+        const end = (row.endTime || '').toString().slice(0,5);
+        const skillLabel = row.skill ? (row.skill.name || row.skill.code || ('#' + row.skill.id)) : 'スキル未指定';
+        label = `${dayLabel} ${start}-${end} / ${skillLabel}`;
+      }
+      if (!confirm(`${label} を削除しますか？`)) return;
       try {
         await fetchWithTimeout(`/api/demand/${id}`, { method:'DELETE' });
         setWeeklyMessage('削除しました', true);
@@ -1268,7 +1388,13 @@
     function startOfCalendar(date){ const d=new Date(date); const w=d.getDay(); d.setDate(d.getDate()-w); return d; }
     function addDays(d, n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
     function fmtDate(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,'0')+"-"+String(d.getDate()).padStart(2,'0'); }
-    function parseWin(win){ const [s,e]=win.split('-'); return {s,e}; }
+    function parseWin(win){
+      if(!win) return {s:'',e:''};
+      const parts = win.split('-');
+      const s = (parts[0] || '').trim();
+      const e = (parts[1] || '').trim();
+      return {s,e};
+    }
     function parsePairDefinitions(raw){
       if(!raw) return [];
       try{
@@ -1297,6 +1423,31 @@
       });
       sel.innerHTML = options.join('');
     }
+    function updateQuickAddButtons(){
+      const skillSelected = Boolean(document.getElementById('skillSelect')?.value);
+      ['btnAddAM','btnAddPM','btnAddFull'].forEach(id=>{
+        const btn = document.getElementById(id);
+        if(btn) btn.disabled = !skillSelected;
+      });
+    }
+    function updateQuickAddHints(){
+      const hints = [
+        { id: 'hint-am', win: resolvePairWindow('morningWindow','09:00-13:00'), fallback: 'ペア前半の時間を入力します' },
+        { id: 'hint-pm', win: resolvePairWindow('afternoonWindow','13:00-18:00'), fallback: 'ペア後半の時間を入力します' },
+        { id: 'hint-full', win: resolvePairWindow('fullWindow','09:00-18:00'), fallback: '前半と後半を同時に追加します' }
+      ];
+      hints.forEach(({ id, win, fallback })=>{
+        const el = document.getElementById(id);
+        if(!el) return;
+        const span = el.querySelector('span');
+        const text = win ? `${win} を反映します` : fallback;
+        if(span){
+          span.textContent = text;
+        }else{
+          el.textContent = text;
+        }
+      });
+    }
     function currentPairPreset(){
       const sel = document.getElementById('pairPresetSelect');
       if(!sel || sel.value==='') return null;
@@ -1319,6 +1470,7 @@
         const sel = document.getElementById('skillSelect');
         sel.innerHTML = '<option value="">選択</option>' + state.skills.map(s=>`<option value="${s.id}">${s.name||s.code||('#'+s.id)}</option>`).join('');
       }catch{ state.skills = []; }
+      updateQuickAddButtons();
     }
 
     async function loadPairing(){
@@ -1331,6 +1483,7 @@
         state.pairingSets = [];
       }
       renderPairPresetSelect();
+      updateQuickAddHints();
     }
 
     async function loadDay(dateStr){
@@ -1379,16 +1532,26 @@
       const rows = state.days[state.selectedDate]||[];
       const total = sumSeats(rows);
       document.getElementById('panelSummary').textContent = `合計: ${total}`;
-      let html = '<table><thead><tr><th>時間帯</th><th>必要人数</th><th>スキル</th><th></th></tr></thead><tbody>';
+      let html = '<table><thead><tr><th>時間帯</th><th>座席</th><th>スキル</th><th>操作</th></tr></thead><tbody>';
       for(const r of rows){
         const sk = r.skill ? (r.skill.name||r.skill.code||('#'+r.skill.id)) : '';
+        const start = (r.startTime||'').slice(0,5);
+        const end = (r.endTime||'').slice(0,5);
+        const demandLabel = `${r.date || state.selectedDate || ''} ${start} - ${end} / ${sk || 'スキル未指定'} (${r.requiredSeats ?? 0}席)`;
+        const safeLabel = demandLabel.replace(/"/g, '&quot;');
         html += `<tr data-id="${r.id}">
-          <td>${(r.startTime||'').slice(0,5)} - ${(r.endTime||'').slice(0,5)}</td>
-          <td>${r.requiredSeats}</td>
+          <td>${start} - ${end}</td>
+          <td>
+            <div class="seat-stepper">
+              <button type="button" class="btn-seat" data-id="${r.id}" data-delta="-1" ${r.requiredSeats <= 0 ? 'disabled' : ''}>-</button>
+              <span class="seat-count">${r.requiredSeats}</span>
+              <button type="button" class="btn-seat" data-id="${r.id}" data-delta="1">+</button>
+            </div>
+          </td>
           <td>${sk}</td>
           <td class="actions">
             <button class="ghost btn-edit" data-id="${r.id}">編集</button>
-            <button class="danger btn-del" data-id="${r.id}">削除</button>
+            <button class="danger btn-del" data-id="${r.id}" data-label="${safeLabel}">削除</button>
           </td>
         </tr>`;
       }
@@ -1397,13 +1560,24 @@
       list.querySelectorAll('.btn-del').forEach(btn=>{
         btn.addEventListener('click', async (e)=>{
           const id = e.currentTarget.getAttribute('data-id');
-          if (!confirm(`需要ID=${id} を削除しますか?`)) return;
+          const label = e.currentTarget.getAttribute('data-label') || `ID=${id}`;
+          if (!confirm(`${label} を削除しますか？`)) return;
           const res = await fetch(`/api/demand/${id}`, { method:'DELETE' });
           if(!res.ok){ alert('削除に失敗しました'); setStatus('需要の削除に失敗しました', 'danger'); return; }
           await loadDay(state.selectedDate); renderList();
           document.getElementById(`sum-${state.selectedDate}`).textContent = `合計 ${sumSeats(state.days[state.selectedDate])}`;
           setStatus('需要を削除しました', 'success');
+          setMonthlyMessage('選択した需要を削除しました', true);
+          await refreshDailyMonitors(state.selectedDate);
           updateOverview();
+        });
+      });
+      list.querySelectorAll('.btn-seat').forEach(btn=>{
+        btn.addEventListener('click', async (e)=>{
+          const id = Number(e.currentTarget.getAttribute('data-id'));
+          const delta = Number(e.currentTarget.getAttribute('data-delta'));
+          if (!Number.isFinite(id) || !Number.isFinite(delta)) return;
+          await adjustDemandSeats(id, delta);
         });
       });
       list.querySelectorAll('.btn-edit').forEach(btn=>{
@@ -1415,10 +1589,19 @@
           document.getElementById('f_end').value = (row.endTime||'').slice(0,5);
           document.getElementById('f_seats').value = row.requiredSeats;
           document.getElementById('skillSelect').value = row.skill ? String(row.skill.id) : '';
+          updateQuickAddButtons();
           document.getElementById('btnAdd').textContent = '更新';
           document.getElementById('btnAdd').dataset.editId = String(row.id);
         });
       });
+    }
+
+    async function refreshDailyMonitors(dateStr){
+      await loadAll();
+      const viewDate = document.getElementById('view-date')?.value;
+      if(viewDate && dateStr && viewDate === dateStr){
+        await loadEffective();
+      }
     }
 
     async function selectDate(dateStr){
@@ -1435,13 +1618,17 @@
     async function createOrUpdateByForm(win){
       const start = win?.s || document.getElementById('f_start').value;
       const end = win?.e || document.getElementById('f_end').value;
-      const seats = Number(document.getElementById('f_seats').value||document.getElementById('defaultSeats').value||0);
+      let seats = Number(document.getElementById('f_seats').value||document.getElementById('defaultSeats').value||1);
       const skillIdStr = document.getElementById('skillSelect').value;
       const skillId = skillIdStr? Number(skillIdStr): null;
       if (!state.selectedDate){ alert('日付を選択してください'); return; }
       if (!skillId){ alert('スキルを選択してください'); return; }
       if (!start || !end || start>=end){ alert('時間帯を確認してください'); return; }
-      if (seats<0){ alert('座席数は0以上にしてください'); return; }
+      if (!Number.isFinite(seats) || seats < 1){
+        alert('座席数は1以上にしてください');
+        setMonthlyMessage('座席数は1以上で入力してください', false);
+        return;
+      }
       const editId = document.getElementById('btnAdd').dataset.editId;
       const body = { date: state.selectedDate, dayOfWeek: null, startTime: start, endTime: end, requiredSeats: seats, skillId, active: true };
       const url = editId ? `/api/demand/${editId}` : '/api/demand';
@@ -1450,14 +1637,59 @@
       if(!r.ok){
         try{ const j=await r.json(); alert(j.message||'保存に失敗しました'); }
         catch{ alert('保存に失敗しました'); }
+        setMonthlyMessage('需要の保存に失敗しました', false);
         return;
       }
-      document.getElementById('btnAdd').textContent = '追加';
+      document.getElementById('btnAdd').textContent = '登録 / 更新';
       delete document.getElementById('btnAdd').dataset.editId;
       await loadDay(state.selectedDate); renderList();
       document.getElementById(`sum-${state.selectedDate}`).textContent = `合計 ${sumSeats(state.days[state.selectedDate])}`;
       setStatus(editId ? '需要を更新しました' : '需要を追加しました', 'success');
+      setMonthlyMessage(editId ? '需要を更新しました' : '需要を追加しました', true);
+      await refreshDailyMonitors(state.selectedDate);
       updateOverview();
+    }
+    async function adjustDemandSeats(id, delta){
+      if(!state.selectedDate) return;
+      const rows = state.days[state.selectedDate] || [];
+      const target = rows.find(r => Number(r.id) === Number(id));
+      if(!target){
+        setMonthlyMessage('対象の需要が見つかりませんでした', false);
+        return;
+      }
+      const skillId = target.skill ? target.skill.id : null;
+      if(!skillId){
+        setMonthlyMessage('スキル未指定の需要は調整できません', false);
+        return;
+      }
+      const current = Number(target.requiredSeats || 0);
+      const next = current + delta;
+      if(next < 0){
+        setMonthlyMessage('座席数は0未満にできません', false);
+        return;
+      }
+      const payload = {
+        date: target.date || state.selectedDate,
+        dayOfWeek: null,
+        startTime: target.startTime,
+        endTime: target.endTime,
+        requiredSeats: next,
+        skillId,
+        active: true
+      };
+      try{
+        const res = await fetch(`/api/demand/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+        if(!res.ok) throw new Error();
+        await loadDay(state.selectedDate);
+        renderList();
+        document.getElementById(`sum-${state.selectedDate}`).textContent = `合計 ${sumSeats(state.days[state.selectedDate])}`;
+        setStatus('座席数を調整しました', 'success');
+        setMonthlyMessage('座席数を調整しました', true);
+        await refreshDailyMonitors(state.selectedDate);
+      }catch{
+        alert('座席調整に失敗しました');
+        setMonthlyMessage('座席数の調整に失敗しました', false);
+      }
     }
 
     async function applyWeeklyTemplates() {
@@ -1498,19 +1730,31 @@
         createOrUpdateByForm({s,e});
       });
       document.getElementById('skillSelect').addEventListener('change', ()=>{
-        const dis = !document.getElementById('skillSelect').value;
-        ['btnAddAM','btnAddPM','btnAddFull'].forEach(id=>{ const b=document.getElementById(id); if(b){ b.disabled = dis; }});
+        updateQuickAddButtons();
       });
-      document.getElementById('btnGenerate').addEventListener('click', async ()=>{
-        const y = state.year, m = state.month; if(!y||!m) return;
-        if (!confirm(`${y}年${m}月を需要ベースで生成します。よろしいですか?`)) return;
-        const url = `/api/schedule/generate/demand/async?year=${y}&month=${m}&granularity=60&reset=true`;
-        try{
-          const r=await fetch(url,{method:'POST'});
-          const j=await r.json();
-          alert(j.message||'生成リクエストを受け付けました');
-          setStatus(j.message || '需要ベースの生成をリクエストしました', 'success');
-        }catch{ alert('生成の開始に失敗しました'); setStatus('生成リクエストの送信に失敗しました', 'danger'); }
+      document.getElementById('pairPresetSelect').addEventListener('change', ()=>{
+        updateQuickAddHints();
+      });
+      const monthlyCard = document.getElementById('monthly-card');
+      monthlyCard?.addEventListener('click', (event)=>{
+        const seatBtn = event.target.closest('[data-seat-delta]');
+        if(!seatBtn) return;
+        event.preventDefault();
+        const delta = Number(seatBtn.dataset.seatDelta);
+        if(!Number.isFinite(delta)) return;
+        const seatInput = document.getElementById('f_seats');
+        const current = Number(seatInput.value || 1);
+        const next = Math.max(1, current + delta);
+        seatInput.value = next;
+      });
+      document.getElementById('defaultSeats').addEventListener('change', ()=>{
+        const input = document.getElementById('defaultSeats');
+        let base = Number(input.value || 1);
+        if(!Number.isFinite(base) || base < 1) base = 1;
+        input.value = base;
+        if(!document.getElementById('btnAdd').dataset.editId){
+          document.getElementById('f_seats').value = base;
+        }
       });
       document.getElementById('ym').addEventListener('change', ()=>{
         const v = document.getElementById('ym').value;
@@ -1519,6 +1763,8 @@
         state.year=y; state.month=m; updateOverview(); loadMonth(); syncReservationRangeToMonth(true);
       });
       document.getElementById('btnApplyWeekly').addEventListener('click', applyWeeklyTemplates);
+      updateQuickAddButtons();
+      updateQuickAddHints();
     }
 
     document.getElementById('btn-view-effective').addEventListener('click', loadEffective);

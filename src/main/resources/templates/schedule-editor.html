@@ -423,6 +423,11 @@
             border-radius: 6px;
             font-size: 14px;
         }
+        .field-hint {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
+        }
         .chip-row {
             display: flex;
             gap: 8px;
@@ -521,13 +526,16 @@
                 <h1>シフト自動生成 / グリッド調整</h1>
                 <p style="margin:4px 0 0;color:#4c566a;">シフト生成欄から生成を行い、下部のグリッドで担当者ごとのシフトを細かく調整できます。</p>
             </div>
+            <div class="header-links">
+                <a class="btn btn-secondary ghost" href="/calendar">カレンダー表示</a>
+            </div>
         </header>
 
         <section class="card builder-hero">
             <div class="hero-summary">
                 <div class="hero-summary-header">
                     <p class="eyebrow">Builder</p>
-                    <h2>対象月のシフトサマリー</h2>
+                    <h2>対象月のシフト概要</h2>
                     <p>対象期間のシフト件数・従業員数・不足状況をひと目で確認できます。</p>
                 </div>
                 <div class="hero-status">
@@ -560,7 +568,7 @@
             <div class="section-header">
                 <div>
                     <h2>シフト生成</h2>
-                    <p class="section-subtitle">対象月のシフトを需要ベースで自動生成し、初期化や最新データの再取得もここから行えます。</p>
+                    <p class="section-subtitle">対象月のシフトを、需要データから自動生成します。シフトの初期化や最新データの反映も、このパネルからまとめて操作できます。</p>
                 </div>
             </div>
             <div class="builder-toolbar">
@@ -588,8 +596,8 @@
                 </div>
                 <div class="builder-actions">
                     <button class="btn btn-secondary ghost" type="button" id="builder-download-csv">シフトCSVダウンロード</button>
-                    <button class="btn btn-secondary" type="button" id="builder-refresh-secondary">最新シフト取得</button>
-                    <button class="btn btn-danger" type="button" id="builder-reset">シフト初期化</button>
+                    <button class="btn btn-secondary" type="button" id="builder-refresh-secondary">最新シフトを読み込む</button>
+                    <button class="btn btn-danger" type="button" id="builder-reset">当月のシフトをすべて削除</button>
                     <button class="btn btn-primary" type="button" id="builder-generate">シフトを生成</button>
                 </div>
             </div>
@@ -610,7 +618,7 @@
             </div>
             <div class="shortage-panel" id="builder-shortage-panel" style="display:none;">
                 <div class="shortage-header">
-                    <strong>割当不足とFREEの状況</strong>
+                    <strong>割当不足と空き（待機）の状況</strong>
                     <button class="btn btn-secondary ghost" type="button" id="builder-hide-shortage">閉じる</button>
                 </div>
                 <div class="table-container small">
@@ -641,7 +649,7 @@
             <select id="viewMode">
                 <option value="week">週次 (7日)</option>
                 <option value="month">月次</option>
-                <option value="custom">自由入力</option>
+                <option value="custom">日付指定</option>
             </select>
         </div>
         <div>
@@ -649,7 +657,7 @@
             <input type="date" id="endDate">
         </div>
         <div style="align-self: flex-end;">
-            <button class="btn btn-secondary" id="loadBtn">グリッドを読み込む</button>
+            <button class="btn btn-secondary" id="loadBtn">シフトを表示</button>
         </div>
         <div class="status-bar" id="metaInfo"></div>
     </section>
@@ -674,8 +682,16 @@
                 <input type="date" id="workDateInput">
             </div>
             <div class="form-group">
-                <label for="shiftNameInput">シフト名</label>
-                <input type="text" id="shiftNameInput" placeholder="例: Manual / Demand-A">
+                <label for="shiftNameInput">シフト名（任意）</label>
+                <input type="text" id="shiftNameInput" placeholder="例: 早番 / 遅番 / 窓口A / 事務サポート">
+                <div class="field-hint">画面上の表示ラベルです。未入力でもかまいません。</div>
+            </div>
+            <div class="form-group">
+                <label for="skillSelect">スキル</label>
+                <select id="skillSelect">
+                    <option value="">指定なし（汎用枠）</option>
+                </select>
+                <div class="field-hint" id="skillHint">従業員を選ぶと、保有スキルが表示されます。</div>
             </div>
             <div class="form-group chip-row chip-row--split">
                 <div>
@@ -696,10 +712,14 @@
                 </div>
                 <div class="status-bar" id="breakHint">例: 15 / 10 など、分単位で自由に設定できます</div>
             </div>
-            <div class="form-group chip-row chip-row--flags">
-                <label><input type="checkbox" id="flagFree"> FREE</label>
-                <label><input type="checkbox" id="flagOff"> 休日</label>
-                <label><input type="checkbox" id="flagLeave"> 有給</label>
+            <div class="form-group">
+                <label for="shiftTypeSelect">シフト種別</label>
+                <select id="shiftTypeSelect">
+                    <option value="normal">需要枠（通常）</option>
+                    <option value="free">空き（待機）</option>
+                    <option value="off">休日</option>
+                    <option value="leave">有給</option>
+                </select>
             </div>
             <div class="form-group chip-row">
                 <button class="btn btn-secondary" id="newBtn">新規追加</button>
@@ -1080,6 +1100,9 @@
         employees: [],
         days: [],
         assignments: new Map(),
+        skillLookup: new Map(),
+        demandCache: new Map(),
+        demandRequests: new Map(),
         pending: { create: [], update: [], delete: [] },
         clipboard: null,
         selectedAssignmentId: null,
@@ -1091,7 +1114,11 @@
             shortBreakMinutes: 15,
             minShiftMinutes: 180,
             applyToShortShifts: true
-        }
+        },
+        currentEmployeeHasSkills: false,
+        lastPlaceholderType: null,
+        timeTouched: { start: false, end: false },
+        lastAutoShiftName: ''
     };
 
     const dom = {
@@ -1105,15 +1132,15 @@
         employeeSelect: document.getElementById('employeeSelect'),
         workDateInput: document.getElementById('workDateInput'),
         shiftNameInput: document.getElementById('shiftNameInput'),
+        skillSelect: document.getElementById('skillSelect'),
+        skillHint: document.getElementById('skillHint'),
         startTimeInput: document.getElementById('startTimeInput'),
         endTimeInput: document.getElementById('endTimeInput'),
         breakList: document.getElementById('breakList'),
         breakHint: document.getElementById('breakHint'),
         breakAddBtn: document.getElementById('breakAddBtn'),
         breakSuggestBtn: document.getElementById('breakSuggestBtn'),
-        flagFree: document.getElementById('flagFree'),
-        flagOff: document.getElementById('flagOff'),
-        flagLeave: document.getElementById('flagLeave'),
+        shiftTypeSelect: document.getElementById('shiftTypeSelect'),
         newBtn: document.getElementById('newBtn'),
         updateBtn: document.getElementById('updateBtn'),
         deleteBtn: document.getElementById('deleteBtn'),
@@ -1132,6 +1159,7 @@
         leave: { start: '09:00', end: '18:00' },
         default: { start: '09:00', end: '18:00' }
     };
+    const BREAK_ROUND_STEP = 15;
 
     function timeToMinutes(str) {
         if (!str || str.length < 4) return null;
@@ -1145,6 +1173,29 @@
         const h = String(Math.floor(clamped / 60)).padStart(2, '0');
         const m = String(clamped % 60).padStart(2, '0');
         return `${h}:${m}`;
+    }
+
+    function roundMinutesToStep(value, step = BREAK_ROUND_STEP) {
+        if (!Number.isFinite(value)) return value;
+        if (!step || step <= 0) return value;
+        return Math.round(value / step) * step;
+    }
+
+    function alignBreakStart(candidate, shiftStart, shiftEnd, duration, step = BREAK_ROUND_STEP) {
+        if (!Number.isFinite(candidate)) return shiftStart;
+        const rounded = roundMinutesToStep(candidate, step);
+        const minStart = Number.isFinite(shiftStart) ? shiftStart : 0;
+        const maxStartBase = Number.isFinite(shiftEnd) ? shiftEnd : minStart;
+        const maxStart = Math.max(minStart, maxStartBase - Math.max(0, duration || 0));
+        return Math.min(Math.max(rounded, minStart), maxStart);
+    }
+
+    function normalizeTimeValue(value) {
+        if (value == null) return '';
+        if (typeof value === 'string') {
+            return value.slice(0, 5);
+        }
+        return value;
     }
 
     function recommendedLunchMinutes(startStr, endStr) {
@@ -1169,8 +1220,11 @@
         if (lunchMinutes > 0) {
             const slack = Math.max(0, duration - lunchMinutes);
             const offset = Math.floor(slack / 2);
-            const lunchStart = minutesToTime(start + offset);
-            const lunchEnd = minutesToTime(start + offset + lunchMinutes);
+            const lunchCandidate = start + offset;
+            const lunchStartMinutes = alignBreakStart(lunchCandidate, start, end, lunchMinutes);
+            const lunchEndMinutes = lunchStartMinutes + lunchMinutes;
+            const lunchStart = minutesToTime(lunchStartMinutes);
+            const lunchEnd = minutesToTime(lunchEndMinutes);
             result.push({
                 type: 'LUNCH',
                 start: lunchStart,
@@ -1182,18 +1236,20 @@
             const shortMinutes = Math.max(5, state.breakSettings.shortBreakMinutes || 15);
             const minShift = Math.max(60, state.breakSettings.minShiftMinutes || 180);
             if (duration >= minShift) {
-                let shortStart;
+                let shortStartMinutes;
                 if (result.length > 0) {
                     const lunchEnd = result[0].end;
-                    const remaining = timeToMinutes(endStr) - timeToMinutes(lunchEnd);
+                    const lunchEndMinutes = timeToMinutes(lunchEnd);
+                    const remaining = timeToMinutes(endStr) - lunchEndMinutes;
                     const offset = Math.max(0, Math.floor((remaining - shortMinutes) / 2));
-                    shortStart = minutesToTime(timeToMinutes(lunchEnd) + offset);
+                    shortStartMinutes = alignBreakStart(lunchEndMinutes + offset, timeToMinutes(lunchEnd), end, shortMinutes);
                 } else if (state.breakSettings.applyToShortShifts) {
                     const offset = Math.max(0, Math.floor((duration - shortMinutes) / 2));
-                    shortStart = minutesToTime(start + offset);
+                    shortStartMinutes = alignBreakStart(start + offset, start, end, shortMinutes);
                 }
-                if (shortStart) {
-                    const shortEnd = minutesToTime(timeToMinutes(shortStart) + shortMinutes);
+                if (Number.isFinite(shortStartMinutes)) {
+                    const shortStart = minutesToTime(shortStartMinutes);
+                    const shortEnd = minutesToTime(shortStartMinutes + shortMinutes);
                     result.push({
                         type: 'SHORT',
                         start: shortStart,
@@ -1271,7 +1327,7 @@
     function updateBreakHint() {
         if (!dom.breakHint) return;
         if (!state.formBreaks.length) {
-            dom.breakHint.textContent = '例: 15 / 10 など自由に入力できます';
+            dom.breakHint.textContent = '例: 12:00〜12:45 や 15:00〜15:10 など、時間帯で自由に設定できます';
             return;
         }
         const total = state.formBreaks.map(br => {
@@ -1305,6 +1361,314 @@
         return [];
     }
 
+    function resetTimeTouched() {
+        state.timeTouched.start = false;
+        state.timeTouched.end = false;
+    }
+
+    function registerSkillMeta(meta) {
+        if (!meta || meta.id == null) return;
+        const key = String(meta.id);
+        state.skillLookup.set(key, {
+            id: meta.id,
+            code: meta.code || '',
+            name: meta.name || ''
+        });
+    }
+
+    function getSkillMeta(skillId) {
+        if (skillId == null) return null;
+        const key = String(skillId);
+        if (state.skillLookup.has(key)) {
+            return state.skillLookup.get(key);
+        }
+        for (const emp of state.employees) {
+            const list = Array.isArray(emp.skills) ? emp.skills : [];
+            const found = list.find(sk => Number(sk.id) === Number(skillId));
+            if (found) {
+                return {
+                    id: found.id,
+                    code: found.code || '',
+                    name: found.name || ''
+                };
+            }
+        }
+        return null;
+    }
+
+    function rebuildSkillLookup() {
+        state.skillLookup = new Map();
+        state.employees.forEach(emp => {
+            (emp.skills || []).forEach(registerSkillMeta);
+        });
+        state.assignments.forEach(assign => {
+            if (assign.skillId != null) {
+                registerSkillMeta({
+                    id: assign.skillId,
+                    code: assign.skillCode,
+                    name: assign.skillName
+                });
+            }
+        });
+    }
+
+    function refreshSkillOptions(selectedSkillId = null) {
+        if (!dom.skillSelect) return { hasSkills: false };
+        const employeeId = Number(dom.employeeSelect.value);
+        const employee = state.employees.find(e => Number(e.id) === employeeId);
+        const available = Array.isArray(employee?.skills) ? [...employee.skills] : [];
+        if (selectedSkillId != null && !available.some(sk => Number(sk.id) === Number(selectedSkillId))) {
+            const extra = getSkillMeta(selectedSkillId);
+            if (extra) {
+                available.push(extra);
+            }
+        }
+        available.sort((a, b) => {
+            const labelA = (a?.name && a.name.trim()) || a?.code || '';
+            const labelB = (b?.name && b.name.trim()) || b?.code || '';
+            return labelA.localeCompare(labelB, 'ja');
+        });
+        dom.skillSelect.innerHTML = '';
+        const defaultOpt = document.createElement('option');
+        defaultOpt.value = '';
+        defaultOpt.textContent = '指定なし（汎用枠）';
+        dom.skillSelect.appendChild(defaultOpt);
+        available.forEach(skill => {
+            if (!skill || skill.id == null) return;
+            const option = document.createElement('option');
+            option.value = skill.id;
+            const label = (skill.name && skill.name.trim())
+                ? skill.name.trim()
+                : (skill.code ? `コード: ${skill.code}` : `ID: ${skill.id}`);
+            option.textContent = label;
+            dom.skillSelect.appendChild(option);
+        });
+        if (selectedSkillId != null) {
+            dom.skillSelect.value = String(selectedSkillId);
+        } else {
+            dom.skillSelect.value = '';
+        }
+        return { hasSkills: available.length > 0 };
+    }
+
+    function handleEmployeeChange(selectedSkillId = null, options = {}) {
+        if (!dom.skillSelect) return;
+        const preserveShiftName = !!options.preserveShiftName;
+        const info = refreshSkillOptions(selectedSkillId);
+        state.currentEmployeeHasSkills = info.hasSkills;
+        syncSkillAvailability();
+        if (!preserveShiftName) {
+            maybeUpdateShiftName('employee-change');
+        }
+    }
+
+    function syncSkillAvailability() {
+        if (!dom.skillSelect) return;
+        const placeholder = currentPlaceholderType();
+        if (placeholder) {
+            dom.skillSelect.disabled = true;
+            dom.skillSelect.value = '';
+            if (dom.skillHint) {
+                dom.skillHint.textContent = '空き・休日・有給ではスキル指定は不要です。';
+            }
+            return;
+        }
+        if (!state.currentEmployeeHasSkills) {
+            dom.skillSelect.disabled = true;
+            dom.skillSelect.value = '';
+            if (dom.skillHint) {
+                dom.skillHint.textContent = 'この従業員には登録済みスキルがありません。';
+            }
+            return;
+        }
+        dom.skillSelect.disabled = false;
+        if (dom.skillHint) {
+            dom.skillHint.textContent = '需要枠に反映するスキルを選択してください。';
+        }
+    }
+
+    function getSelectedSkillId() {
+        if (!dom.skillSelect || dom.skillSelect.disabled) return null;
+        const value = dom.skillSelect.value;
+        return value ? Number(value) : null;
+    }
+
+    function enrichAssignmentWithSkill(target, skillId) {
+        target.skillId = skillId ?? null;
+        if (skillId == null) {
+            target.skillName = null;
+            target.skillCode = null;
+            return;
+        }
+        const meta = getSkillMeta(skillId);
+        if (meta) {
+            registerSkillMeta(meta);
+            target.skillName = meta.name || '';
+            target.skillCode = meta.code || '';
+        } else {
+            target.skillName = target.skillName || '';
+            target.skillCode = target.skillCode || '';
+        }
+    }
+
+    async function fetchDemandForDate(date) {
+        if (!date) return [];
+        if (state.demandCache.has(date)) {
+            return state.demandCache.get(date);
+        }
+        if (state.demandRequests.has(date)) {
+            return state.demandRequests.get(date);
+        }
+        const pending = (async () => {
+            try {
+                const res = await fetch(`/api/demand/effective?date=${date}`);
+                if (!res.ok) throw new Error('demand fetch failed');
+                const json = await res.json();
+                const normalized = normalizeDemandIntervals(json?.data);
+                state.demandCache.set(date, normalized);
+                return normalized;
+            } catch (err) {
+                console.warn('Failed to load demand intervals', err);
+                const fallback = [];
+                state.demandCache.set(date, fallback);
+                return fallback;
+            } finally {
+                state.demandRequests.delete(date);
+            }
+        })();
+        state.demandRequests.set(date, pending);
+        return pending;
+    }
+
+    function normalizeDemandIntervals(raw) {
+        if (!Array.isArray(raw)) return [];
+        return raw
+            .filter(item => item && item.startTime && item.endTime)
+            .map(item => ({
+                id: item.id,
+                start: formatHm(item.startTime),
+                end: formatHm(item.endTime),
+                skillId: item.skill && item.skill.id != null ? String(item.skill.id) : null
+            }));
+    }
+
+    function formatHm(value) {
+        if (!value) return '';
+        if (typeof value === 'string') {
+            return value.slice(0, 5);
+        }
+        return value.toString().slice(0, 5);
+    }
+
+    function pickDemandCandidate(intervals, skillId) {
+        if (!Array.isArray(intervals) || !intervals.length) return null;
+        const sorted = [...intervals].sort((a, b) => {
+            return (timeToMinutes(a.start) ?? 0) - (timeToMinutes(b.start) ?? 0);
+        });
+        const target = skillId != null ? String(skillId) : null;
+        if (target) {
+            const match = sorted.find(item => item.skillId && item.skillId === target);
+            if (match) return match;
+        }
+        return sorted[0] || null;
+    }
+
+    function buildShiftNameSuggestion() {
+        const skillId = getSelectedSkillId();
+        const skillMeta = getSkillMeta(skillId);
+        const base = (skillMeta?.name && skillMeta.name.trim())
+            || (skillMeta?.code && skillMeta.code.trim())
+            || '需要枠';
+        const start = normalizeTimeValue(dom.startTimeInput.value);
+        const end = normalizeTimeValue(dom.endTimeInput.value);
+        if (start && end) {
+            return `${base} ${start}-${end}`;
+        }
+        return base;
+    }
+
+    function normalizeShiftName(value) {
+        if (!value) return '';
+        return value.replace(/\s+/g, ' ').trim();
+    }
+
+    function setShiftNameSuggestion(text) {
+        if (!dom.shiftNameInput) return;
+        dom.shiftNameInput.value = text;
+        state.lastAutoShiftName = text;
+    }
+
+    function maybeUpdateShiftName(reason = 'default') {
+        if (!dom.shiftNameInput || currentPlaceholderType()) return;
+        const currentNormalized = normalizeShiftName(dom.shiftNameInput.value);
+        const needsAuto =
+            !currentNormalized ||
+            currentNormalized === '空き（待機）' ||
+            currentNormalized.toUpperCase() === 'FREE';
+        const wasAuto = state.lastAutoShiftName && currentNormalized === state.lastAutoShiftName;
+        if (!needsAuto && !wasAuto) {
+            return;
+        }
+        const suggestion = buildShiftNameSuggestion();
+        if (!suggestion) return;
+        if (!needsAuto && wasAuto && reason === 'skill-change') {
+            setShiftNameSuggestion(suggestion);
+            return;
+        }
+        if (!needsAuto && wasAuto && reason === 'time-change') {
+            setShiftNameSuggestion(suggestion);
+            return;
+        }
+        if (needsAuto || (wasAuto && reason === 'employee-change')) {
+            setShiftNameSuggestion(suggestion);
+        }
+    }
+
+    function shouldAutofillTime(input, reason) {
+        if (!input) return false;
+        if (reason === 'skill-change' || reason === 'placeholder-exit') {
+            return true;
+        }
+        if (!input.value) return true;
+        const key = input === dom.startTimeInput ? 'start' : 'end';
+        if (state.timeTouched[key]) {
+            return false;
+        }
+        if (reason === 'date-change' || reason === 'employee-change') {
+            return true;
+        }
+        if (input.value === '00:00' || input.value === '00:05') {
+            return true;
+        }
+        return false;
+    }
+
+    async function autosetTimesForDemand(reason = 'skill-change') {
+        if (currentPlaceholderType()) return;
+        const date = dom.workDateInput.value;
+        if (!date) return;
+        let intervals = [];
+        try {
+            intervals = await fetchDemandForDate(date);
+        } catch (_) {
+            intervals = [];
+        }
+        const skillId = getSelectedSkillId();
+        const candidate = pickDemandCandidate(intervals, skillId);
+        const fallbackStart = '08:00';
+        const fallbackEnd = '17:00';
+        const startValue = candidate?.start || fallbackStart;
+        const endValue = candidate?.end || fallbackEnd;
+        if (shouldAutofillTime(dom.startTimeInput, reason)) {
+            dom.startTimeInput.value = startValue;
+        }
+        if (shouldAutofillTime(dom.endTimeInput, reason)) {
+            dom.endTimeInput.value = endValue;
+        }
+        updateBreakHint();
+        maybeUpdateShiftName('time-change');
+    }
+
     async function fetchBreakSettings() {
         try {
             const res = await fetch('/api/config/break-settings');
@@ -1319,19 +1683,18 @@
         }
     }
     function currentPlaceholderType() {
-        if (dom.flagLeave.checked) return 'leave';
-        if (dom.flagOff.checked) return 'off';
-        if (dom.flagFree.checked) return 'free';
+        if (!dom.shiftTypeSelect) return null;
+        const value = dom.shiftTypeSelect.value;
+        if (value === 'free' || value === 'off' || value === 'leave') return value;
         return null;
     }
 
     function maskShiftInputs(type) {
-        const limits = PLACEHOLDER_LIMITS[type] || PLACEHOLDER_LIMITS.default;
-        if (!dom.startTimeInput.dataset.savedValue) {
-            dom.startTimeInput.dataset.savedValue = dom.startTimeInput.value || limits.start;
+        if (!dom.startTimeInput.dataset.savedValue && dom.startTimeInput.value) {
+            dom.startTimeInput.dataset.savedValue = dom.startTimeInput.value;
         }
-        if (!dom.endTimeInput.dataset.savedValue) {
-            dom.endTimeInput.dataset.savedValue = dom.endTimeInput.value || limits.end;
+        if (!dom.endTimeInput.dataset.savedValue && dom.endTimeInput.value) {
+            dom.endTimeInput.dataset.savedValue = dom.endTimeInput.value;
         }
         dom.startTimeInput.value = '';
         dom.endTimeInput.value = '';
@@ -1345,11 +1708,15 @@
 
     function unmaskShiftInputs() {
         if (dom.startTimeInput.dataset.savedValue !== undefined) {
-            dom.startTimeInput.value = dom.startTimeInput.dataset.savedValue;
+            if (!dom.startTimeInput.value) {
+                dom.startTimeInput.value = dom.startTimeInput.dataset.savedValue;
+            }
             delete dom.startTimeInput.dataset.savedValue;
         }
         if (dom.endTimeInput.dataset.savedValue !== undefined) {
-            dom.endTimeInput.value = dom.endTimeInput.dataset.savedValue;
+            if (!dom.endTimeInput.value) {
+                dom.endTimeInput.value = dom.endTimeInput.dataset.savedValue;
+            }
             delete dom.endTimeInput.dataset.savedValue;
         }
         dom.startTimeInput.disabled = false;
@@ -1358,20 +1725,26 @@
         dom.breakSuggestBtn.disabled = false;
     }
 
-    function syncPlaceholderUI(source) {
-        if (source && source.checked) {
-            [dom.flagFree, dom.flagOff, dom.flagLeave].forEach(flag => {
-                if (flag !== source) flag.checked = false;
-            });
-        }
+    function syncPlaceholderUI() {
+        const prevType = state.lastPlaceholderType;
         const type = currentPlaceholderType();
+        state.lastPlaceholderType = type;
         if (type === 'leave') {
             dom.shiftNameInput.value = '有休';
+        } else if (type === 'free') {
+            dom.shiftNameInput.value = '空き（待機）';
         }
         if (type) {
             maskShiftInputs(type);
+            syncSkillAvailability();
         } else {
             unmaskShiftInputs();
+            syncSkillAvailability();
+            if (prevType) {
+                resetTimeTouched();
+                autosetTimesForDemand('placeholder-exit');
+                maybeUpdateShiftName('placeholder-exit');
+            }
         }
     }
 
@@ -1409,16 +1782,45 @@
 
     dom.viewMode.addEventListener('change', adjustEndByMode);
     dom.startDate.addEventListener('change', adjustEndByMode);
-    dom.startTimeInput.addEventListener('change', updateBreakHint);
-    dom.endTimeInput.addEventListener('change', updateBreakHint);
+    dom.workDateInput.addEventListener('change', () => {
+        resetTimeTouched();
+        autosetTimesForDemand('date-change');
+    });
+    dom.employeeSelect.addEventListener('change', () => {
+        handleEmployeeChange();
+        resetTimeTouched();
+        autosetTimesForDemand('employee-change');
+    });
+    dom.skillSelect.addEventListener('change', () => {
+        resetTimeTouched();
+        autosetTimesForDemand('skill-change');
+        maybeUpdateShiftName('skill-change');
+    });
+    dom.startTimeInput.addEventListener('change', () => {
+        updateBreakHint();
+        maybeUpdateShiftName('time-change');
+    });
+    dom.endTimeInput.addEventListener('change', () => {
+        updateBreakHint();
+        maybeUpdateShiftName('time-change');
+    });
+    dom.startTimeInput.addEventListener('input', () => {
+        state.timeTouched.start = true;
+        state.lastAutoShiftName = '';
+    });
+    dom.endTimeInput.addEventListener('input', () => {
+        state.timeTouched.end = true;
+        state.lastAutoShiftName = '';
+    });
+    dom.shiftNameInput.addEventListener('input', () => {
+        state.lastAutoShiftName = '';
+    });
     dom.breakAddBtn.addEventListener('click', () => addBreakRow());
     dom.breakSuggestBtn.addEventListener('click', () => {
         state.formBreaks = suggestBreakSet().map(br => ({ ...br, id: null }));
         renderBreakList();
     });
-    dom.flagFree.addEventListener('change', () => syncPlaceholderUI(dom.flagFree));
-    dom.flagOff.addEventListener('change', () => syncPlaceholderUI(dom.flagOff));
-    dom.flagLeave.addEventListener('change', () => syncPlaceholderUI(dom.flagLeave));
+    dom.shiftTypeSelect.addEventListener('change', () => syncPlaceholderUI());
 
     dom.loadBtn.addEventListener('click', () => loadGrid());
     dom.discardBtn.addEventListener('click', () => {
@@ -1454,7 +1856,10 @@
             if (!json.success) throw new Error(json.message || '取得に失敗しました');
             const data = json.data;
             state.days = buildDayList(data.startDate, data.endDate);
-            state.employees = data.employees || [];
+            state.employees = (data.employees || []).map(emp => ({
+                ...emp,
+                skills: Array.isArray(emp.skills) ? emp.skills : []
+            }));
             populateEmployeeSelect();
             state.assignments.clear();
             (data.assignments || []).forEach(assign => {
@@ -1464,6 +1869,9 @@
                     isTemp: false
                 });
             });
+            rebuildSkillLookup();
+            const selected = state.selectedAssignmentId ? state.assignments.get(state.selectedAssignmentId) : null;
+            handleEmployeeChange(selected?.skillId ?? null, { preserveShiftName: true });
             resetPending();
             renderGrid();
             dom.metaInfo.textContent = `期間: ${data.startDate} 〜 ${data.endDate} / 従業員 ${state.employees.length} / シフト ${data.assignments.length}`;
@@ -1486,6 +1894,7 @@
     }
 
     function populateEmployeeSelect() {
+        const previous = dom.employeeSelect.value;
         dom.employeeSelect.innerHTML = '';
         state.employees.forEach(emp => {
             const option = document.createElement('option');
@@ -1493,6 +1902,11 @@
             option.textContent = emp.name + (emp.role ? ` (${emp.role})` : '');
             dom.employeeSelect.appendChild(option);
         });
+        if (previous && state.employees.some(emp => String(emp.id) === previous)) {
+            dom.employeeSelect.value = previous;
+        } else if (state.employees.length) {
+            dom.employeeSelect.value = state.employees[0].id;
+        }
     }
 
     function groupAssignments() {
@@ -1589,24 +2003,27 @@
             return '休日';
         }
         if (assign.isFree) {
-            return 'FREE';
+            return '空き（待機）';
         }
-        const name = assign.shiftName && assign.shiftName.trim() ? assign.shiftName.trim() : 'Manual';
+        const baseName = (assign.shiftName && assign.shiftName.trim())
+            || (assign.skillName && assign.skillName.trim())
+            || 'シフト';
         const start = fmt(assign.startTime);
         const end = fmt(assign.endTime);
         const times = (start && end) ? `${start} - ${end}` : '';
-        if (!times) {
-            return name;
-        }
-        return `${name} ${times}`.trim();
+        return times ? `${baseName} ${times}` : baseName;
     }
 
     function selectCell(cell) {
         state.activeCellKey = `${cell.dataset.employeeId}:${cell.dataset.date}`;
         dom.workDateInput.value = cell.dataset.date;
         dom.employeeSelect.value = cell.dataset.employeeId;
+        handleEmployeeChange();
+        state.lastAutoShiftName = '';
         state.formBreaks = [];
         renderBreakList();
+        resetTimeTouched();
+        autosetTimesForDemand('employee-change');
         highlightSelection();
     }
 
@@ -1615,16 +2032,27 @@
         if (!assign) return;
         state.selectedAssignmentId = clientId;
         dom.employeeSelect.value = assign.employeeId;
+        handleEmployeeChange(assign.skillId ?? null, { preserveShiftName: true });
         dom.workDateInput.value = assign.workDate;
-        dom.shiftNameInput.value = assign.shiftName || '';
+        dom.shiftNameInput.value = assign.isFree ? '空き（待機）' : (assign.shiftName || '');
+        state.lastAutoShiftName = '';
         dom.startTimeInput.value = assign.startTime || '';
         dom.endTimeInput.value = assign.endTime || '';
         state.formBreaks = hydrateBreaks(assign);
         renderBreakList();
-        dom.flagFree.checked = !!assign.isFree;
-        dom.flagOff.checked = !!assign.isOff;
-        dom.flagLeave.checked = !!assign.isLeave;
-        syncPlaceholderUI();
+        if (dom.shiftTypeSelect) {
+            if (assign.isLeave) {
+                dom.shiftTypeSelect.value = 'leave';
+            } else if (assign.isOff) {
+                dom.shiftTypeSelect.value = 'off';
+            } else if (assign.isFree) {
+                dom.shiftTypeSelect.value = 'free';
+            } else {
+                dom.shiftTypeSelect.value = 'normal';
+            }
+            syncPlaceholderUI();
+        }
+        resetTimeTouched();
         dom.selectionInfo.textContent = `選択中: ${assign.employeeName || ''} (${assign.workDate})`;
         highlightSelection();
     }
@@ -1643,6 +2071,7 @@
         const placeholderType = currentPlaceholderType();
         const startTime = effectiveTimeValue(dom.startTimeInput) || (placeholderType ? (PLACEHOLDER_LIMITS[placeholderType]?.start || PLACEHOLDER_LIMITS.default.start) : null);
         const endTime = effectiveTimeValue(dom.endTimeInput) || (placeholderType ? (PLACEHOLDER_LIMITS[placeholderType]?.end || PLACEHOLDER_LIMITS.default.end) : null);
+        const skillId = placeholderType ? null : getSelectedSkillId();
         const payload = {
             employeeId: Number(dom.employeeSelect.value),
             workDate: dom.workDateInput.value,
@@ -1660,14 +2089,18 @@
                     end: br.end,
                     autoGenerated: !!br.autoGenerated
                 })),
-            isFree: dom.flagFree.checked,
-            isOff: dom.flagOff.checked,
-            isLeave: dom.flagLeave.checked
+            skillId,
+            isFree: placeholderType === 'free',
+            isOff: placeholderType === 'off',
+            isLeave: placeholderType === 'leave'
         };
         const lunch = payload.breaks.find(br => br.type === 'LUNCH');
         if (lunch) {
             payload.breakStart = lunch.start;
             payload.breakEnd = lunch.end;
+        }
+        if (placeholderType === 'free') {
+            payload.shiftName = 'FREE';
         }
         return payload;
     }
@@ -1709,6 +2142,7 @@
                 dirty: true,
                 breaks: payload.breaks || []
             };
+            enrichAssignmentWithSkill(assign, payload.skillId ?? null);
             state.assignments.set(clientId, assign);
             state.activeCellKey = `${payload.employeeId}:${payload.workDate}`;
             selectAssignment(clientId);
@@ -1729,15 +2163,7 @@
         try {
             const payload = collectFormValues();
             validateForm(payload);
-            Object.assign(assign, payload, { dirty: true });
-            if (assign.isTemp) {
-                const idx = state.pending.create.findIndex(p => p.clientId === assign.clientId);
-                if (idx >= 0) state.pending.create[idx] = { ...payload, clientId: assign.clientId };
-            } else {
-                stageUpdatePayload(assign.id, payload);
-            }
-            state.assignments.set(assign.clientId, assign);
-            state.activeCellKey = `${payload.employeeId}:${payload.workDate}`;
+            applyPayloadToAssignment(assign, payload);
             renderGrid();
             setMessage('シフトを更新しました', 'success');
         } catch (err) {
@@ -1756,6 +2182,7 @@
             breakEnd: payload.breakEnd,
             breaks: payload.breaks,
             shiftName: payload.shiftName,
+            skillId: payload.skillId,
             isFree: payload.isFree,
             isOff: payload.isOff,
             isLeave: payload.isLeave
@@ -1763,6 +2190,81 @@
         const idx = state.pending.update.findIndex(p => p.id === normalized.id);
         if (idx >= 0) state.pending.update[idx] = normalized;
         else state.pending.update.push(normalized);
+    }
+
+    function updatePendingCreateEntry(clientId, payload) {
+        const idx = state.pending.create.findIndex(p => p.clientId === clientId);
+        if (idx >= 0) {
+            state.pending.create[idx] = { ...payload, clientId };
+        }
+    }
+
+    function applyPayloadToAssignment(assign, payload) {
+        if (!assign) return;
+        Object.assign(assign, payload, { dirty: true });
+        enrichAssignmentWithSkill(assign, payload.skillId ?? null);
+        if (assign.isTemp) {
+            updatePendingCreateEntry(assign.clientId, payload);
+        } else {
+            stageUpdatePayload(assign.id, payload);
+        }
+        state.assignments.set(assign.clientId, assign);
+        state.activeCellKey = `${payload.employeeId}:${payload.workDate}`;
+        updatePendingSummary();
+    }
+
+    function normalizeBreakEntries(list) {
+        return (list || []).map(br => ({
+            type: (br.type || 'SHORT').toString(),
+            start: normalizeTimeValue(br.start),
+            end: normalizeTimeValue(br.end)
+        }));
+    }
+
+    function breaksMatch(existing, incoming) {
+        const a = normalizeBreakEntries(existing);
+        const b = normalizeBreakEntries(incoming);
+        if (a.length !== b.length) return false;
+        for (let i = 0; i < a.length; i++) {
+            if (a[i].type !== b[i].type || a[i].start !== b[i].start || a[i].end !== b[i].end) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function assignmentMatchesPayload(assign, payload) {
+        if (!assign || !payload) return false;
+        const employeeSame = Number(assign.employeeId) === Number(payload.employeeId);
+        const dateSame = (assign.workDate || '') === (payload.workDate || '');
+        const startSame = normalizeTimeValue(assign.startTime) === normalizeTimeValue(payload.startTime);
+        const endSame = normalizeTimeValue(assign.endTime) === normalizeTimeValue(payload.endTime);
+        const shiftSame = normalizeShiftName(assign.shiftName) === normalizeShiftName(payload.shiftName);
+        const skillSame = (assign.skillId == null ? null : Number(assign.skillId)) === (payload.skillId == null ? null : Number(payload.skillId));
+        const breakStartSame = normalizeTimeValue(assign.breakStart) === normalizeTimeValue(payload.breakStart);
+        const breakEndSame = normalizeTimeValue(assign.breakEnd) === normalizeTimeValue(payload.breakEnd);
+        const breaksSame = breaksMatch(assign.breaks, payload.breaks);
+        const flagsSame = Boolean(assign.isFree) === Boolean(payload.isFree)
+            && Boolean(assign.isOff) === Boolean(payload.isOff)
+            && Boolean(assign.isLeave) === Boolean(payload.isLeave);
+        return employeeSame && dateSame && startSame && endSame && shiftSame && skillSame && breakStartSame && breakEndSame && breaksSame && flagsSame;
+    }
+
+    function ensureFormSyncedWithSelection(options = {}) {
+        const { render = false } = options;
+        if (!state.selectedAssignmentId) return false;
+        const assign = state.assignments.get(state.selectedAssignmentId);
+        if (!assign) return false;
+        const payload = collectFormValues();
+        if (assignmentMatchesPayload(assign, payload)) {
+            return false;
+        }
+        validateForm(payload);
+        applyPayloadToAssignment(assign, payload);
+        if (render) {
+            renderGrid();
+        }
+        return true;
     }
 
     function handleDelete() {
@@ -1801,23 +2303,23 @@
             breakStart: assign.breakStart || null,
             breakEnd: assign.breakEnd || null,
             breaks: Array.isArray(assign.breaks) ? assign.breaks.map(b => ({ ...b })) : [],
+            skillId: assign.skillId ?? null,
             isFree: assign.isFree,
             isOff: assign.isOff,
             isLeave: assign.isLeave
         };
-        if (assign.isTemp) {
-            const idx = state.pending.create.findIndex(p => p.clientId === assign.clientId);
-            if (idx >= 0) state.pending.create[idx] = { ...state.pending.create[idx], ...payload };
-        } else {
-            stageUpdatePayload(assign.id, payload);
-        }
-        Object.assign(assign, payload, { dirty: true });
-        state.assignments.set(assign.clientId, assign);
+        applyPayloadToAssignment(assign, payload);
         renderGrid();
     }
 
     async function saveChanges() {
-        if (!state.pending.create.length && !state.pending.update.length && !state.pending.delete.length) {
+        try {
+            ensureFormSyncedWithSelection({ render: true });
+        } catch (err) {
+            setMessage(err.message, 'error');
+            return;
+        }
+        if (!hasPendingChanges()) {
             setMessage('保存する変更がありません', 'error');
             return;
         }
@@ -1858,6 +2360,12 @@
         dom.pendingInfo.textContent = `未保存の変更: ${total} 件 (追加 ${state.pending.create.length} / 更新 ${state.pending.update.length} / 削除 ${state.pending.delete.length})`;
     }
 
+    function hasPendingChanges() {
+        return state.pending.create.length > 0
+            || state.pending.update.length > 0
+            || state.pending.delete.length > 0;
+    }
+
     document.addEventListener('keydown', evt => {
         if (!evt.ctrlKey) return;
         if (evt.key === 'c' && state.selectedAssignmentId) {
@@ -1878,13 +2386,16 @@
                 breakStart: state.clipboard.breakStart || null,
                 breakEnd: state.clipboard.breakEnd || null,
                 breaks: Array.isArray(state.clipboard.breaks) ? state.clipboard.breaks.map(b => ({ ...b, id: null })) : [],
+                skillId: state.clipboard.skillId ?? null,
                 isFree: state.clipboard.isFree,
                 isOff: state.clipboard.isOff,
                 isLeave: state.clipboard.isLeave
             };
             const clientId = `tmp-${++state.tempCounter}`;
             state.pending.create.push({ ...payload, clientId });
-            state.assignments.set(clientId, { ...payload, id: clientId, clientId, isTemp: true, dirty: true });
+            const cloned = { ...payload, id: clientId, clientId, isTemp: true, dirty: true };
+            enrichAssignmentWithSkill(cloned, payload.skillId ?? null);
+            state.assignments.set(clientId, cloned);
             renderGrid();
             setMessage('貼り付けました', 'success');
         }

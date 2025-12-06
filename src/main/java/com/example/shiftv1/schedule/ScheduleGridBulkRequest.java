@@ -48,6 +48,8 @@ public class ScheduleGridBulkRequest {
         private Boolean isFree;
         private Boolean isOff;
         private Boolean isLeave;
+        private Long skillId;
+        private boolean skillSpecified;
 
         public Long getEmployeeId() {
             return employeeId;
@@ -135,6 +137,19 @@ public class ScheduleGridBulkRequest {
 
         public void setIsLeave(Boolean isLeave) {
             this.isLeave = isLeave;
+        }
+
+        public Long getSkillId() {
+            return skillId;
+        }
+
+        public void setSkillId(Long skillId) {
+            this.skillId = skillId;
+            this.skillSpecified = true;
+        }
+
+        public boolean isSkillSpecified() {
+            return skillSpecified;
         }
     }
 

@@ -48,7 +48,7 @@ import com.example.shiftv1.skill.SkillRepository;
 public class ScheduleService {
     private static final Logger logger = LoggerFactory.getLogger(ScheduleService.class);
     private static final int GRID_RANGE_LIMIT_DAYS = 62;
-    private static final int SHORT_BREAK_INCREMENT_MINUTES = 5;
+    private static final int SHORT_BREAK_INCREMENT_MINUTES = 15;
     private static final ObjectMapper PAIRING_MAPPER = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     private static final TypeReference<List<PairingDefinitionPayload>> PAIRING_TYPE = new TypeReference<>() {
@@ -418,6 +418,7 @@ public class ScheduleService {
                         continue;
                     // avail は既に空きのため再照会しない
                     ShiftAssignment a = new ShiftAssignment(day, label, s, e, emp);
+                    a.setSkill(needSkill);
                     assignmentRepository.save(a);
                     autoAssignBreaks(a, newly, blockBreakMinutes);
                     createdAll.add(a);
@@ -713,6 +714,7 @@ public class ScheduleService {
                     continue;
                 // avail は既に空きのため再照会しない
                 ShiftAssignment a = new ShiftAssignment(date, label, s, e, emp);
+                a.setSkill(needSkill);
                 assignmentRepository.save(a);
                 autoAssignBreaks(a, newly, blockBreakMinutes);
                 created.add(a);
@@ -806,6 +808,23 @@ public class ScheduleService {
             throw new BusinessException("GRID_EMPLOYEE_NOT_FOUND", "指定された従業員が見つかりません");
         }
 
+        Set<Long> skillIds = new HashSet<>();
+        creates.stream()
+                .map(ScheduleGridBulkRequest.BasePayload::getSkillId)
+                .filter(Objects::nonNull)
+                .forEach(skillIds::add);
+        updates.stream()
+                .map(ScheduleGridBulkRequest.BasePayload::getSkillId)
+                .filter(Objects::nonNull)
+                .forEach(skillIds::add);
+        Map<Long, Skill> skillsById = skillIds.isEmpty()
+                ? Collections.emptyMap()
+                : skillRepository.findAllById(skillIds).stream()
+                .collect(Collectors.toMap(Skill::getId, s -> s));
+        if (!skillIds.isEmpty() && skillsById.size() != skillIds.size()) {
+            throw new BusinessException("GRID_SKILL_NOT_FOUND", "指定されたスキルが見つかりません");
+        }
+
         Map<CacheKey, List<ShiftWindow>> workingState = new HashMap<>();
         List<String> warnings = new ArrayList<>();
         int created = 0;
@@ -829,6 +848,7 @@ public class ScheduleService {
                     startTime,
                     endTime,
                     employee);
+            entity.setSkill(resolveSkill(payload.getSkillId(), skillsById));
             applyFlags(entity, payload);
             assignmentRepository.save(entity);
             applyBreakChanges(entity, payload, true, false, 0);
@@ -854,6 +874,9 @@ public class ScheduleService {
             entity.setEndTime(endTime);
             if (payload.getShiftName() != null && !payload.getShiftName().isBlank()) {
                 entity.setShiftName(payload.getShiftName().trim());
+            }
+            if (payload.isSkillSpecified()) {
+                entity.setSkill(resolveSkill(payload.getSkillId(), skillsById));
             }
             applyFlags(entity, payload);
             assignmentRepository.save(entity);
@@ -1176,6 +1199,18 @@ public class ScheduleService {
                 .orElseThrow(() -> new BusinessException("GRID_EMPLOYEE_NOT_FOUND", "従業員が見つかりません (ID=" + employeeId + ")"));
     }
 
+    private Skill resolveSkill(Long skillId, Map<Long, Skill> cache) {
+        if (skillId == null) {
+            return null;
+        }
+        Skill skill = cache != null ? cache.get(skillId) : null;
+        if (skill != null) {
+            return skill;
+        }
+        return skillRepository.findById(skillId)
+                .orElseThrow(() -> new BusinessException("GRID_SKILL_NOT_FOUND", "スキルが見つかりません (ID=" + skillId + ")"));
+    }
+
     private LocalTime requireTime(LocalTime time, String fieldName) {
         if (time == null) {
             throw new BusinessException("GRID_TIME_REQUIRED", fieldName + "は必須です");
@@ -1423,6 +1458,7 @@ public class ScheduleService {
                     reservation.getEndTime(),
                     employee
             );
+            assignment.setSkill(reservation.getSkill());
             assignmentRepository.save(assignment);
             autoAssignBreaks(assignment, created.size(), null);
             reservation.setStatus(ShiftReservation.Status.APPLIED);

@@ -44,7 +44,11 @@ public interface ShiftAssignmentRepository extends JpaRepository<ShiftAssignment
      */
     List<ShiftAssignment> findByEmployeeAndWorkDate(Employee employee, LocalDate workDate);
 
-    @Query("SELECT sa FROM ShiftAssignment sa JOIN FETCH sa.employee WHERE sa.workDate BETWEEN :startDate AND :endDate ORDER BY sa.workDate ASC, sa.employee.id ASC")
+    @Query("SELECT sa FROM ShiftAssignment sa " +
+            "JOIN FETCH sa.employee " +
+            "LEFT JOIN FETCH sa.skill " +
+            "WHERE sa.workDate BETWEEN :startDate AND :endDate " +
+            "ORDER BY sa.workDate ASC, sa.employee.id ASC")
     List<ShiftAssignment> findWithEmployeeBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     /**

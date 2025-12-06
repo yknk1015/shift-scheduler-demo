@@ -1,6 +1,7 @@
 package com.example.shiftv1.schedule;
 
 import com.example.shiftv1.employee.Employee;
+import com.example.shiftv1.skill.Skill;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -37,6 +38,10 @@ public class ShiftAssignment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "skill_id")
+    private Skill skill;
 
     // Flags to mark placeholders instead of relying on names/times
     @Column(name = "is_free")
@@ -101,6 +106,14 @@ public class ShiftAssignment {
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
+    }
+
+    public Skill getSkill() {
+        return skill;
+    }
+
+    public void setSkill(Skill skill) {
+        this.skill = skill;
     }
 
     public Boolean getIsFree() { return isFree; }
