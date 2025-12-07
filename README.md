@@ -20,6 +20,24 @@
 「電話が多い時間帯は席数を厚く」「新人には簡単なスキルのみ」など、  
 **需要の波とメンバー構成を両方見ながらシフトを組む場面**での活用をイメージしています。
 
+## 画面イメージ（Screenshots）
+
+### ログイン画面
+![使い方1](https://github.com/user-attachments/assets/23ab539b-b902-48fd-a480-b3b6aca16e6c)
+
+### ダッシュボード
+![使い方2](https://github.com/user-attachments/assets/ccd7af86-d52b-4973-8bd5-d14113e5224f)
+
+### シフト生成
+![使い方3](https://github.com/user-attachments/assets/d99841a2-b526-4862-a08a-3ae9c5269cc9)
+
+### 需要管理
+![使い方4](https://github.com/user-attachments/assets/7656dcbf-03ec-4ac1-8cf9-e89455c96871)
+
+### 従業員マスタ
+![使い方5](https://github.com/user-attachments/assets/974ec616-577e-4877-8438-f50dc36dab35)
+
+
 ### 用語の簡単な説明
 
 - **需要**：時間帯ごとの「必要な席数」のこと  
